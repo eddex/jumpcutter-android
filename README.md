@@ -12,3 +12,9 @@ requires ffmpeg: `sudo apt install ffmpeg`
 pull submodule: `git submodule init`
 
 more info on submodules: https://gist.github.com/gitaarik/8735255
+
+### using docker
+
+build image: `jumpcutter-android/server$ docker build -t jumpcutter-server:latest .`
+
+run container: `docker run -d -p 5000:5000 jumpcutter-server:latest`
