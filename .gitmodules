@@ -1,0 +1,3 @@
+[submodule "server/jumpcutter"]
+	path = server/jumpcutter
+	url = https://github.com/carykh/jumpcutter.git
