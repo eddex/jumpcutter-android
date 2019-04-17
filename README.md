@@ -7,7 +7,8 @@ The app lets the user select a video to edit and configure all settings needed b
 ## Server
 The server is used to edit the video by using [carykh's jumpcutter](https://github.com/carykh/jumpcutter) which is included as a submodule in this repository.
 
-Requirements:
-```
-sudo apt install ffmpeg
-```
+requires ffmpeg: `sudo apt install ffmpeg`
+
+pull submodule: `git submodule init`
+
+more info on submodules: https://gist.github.com/gitaarik/8735255
