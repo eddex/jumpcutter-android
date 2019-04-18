@@ -1,5 +1,6 @@
 import os
 import uuid
+import subprocess
 from flask import Flask, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
@@ -43,7 +44,7 @@ def upload_video():
         video_id = uuid.uuid4().hex
         CONVERTED_VIDEOS[video_id] = filename
 
-        # TODO: call jumpcutter
+        subprocess.call(['python3 ./jumpcutter/jumpcutter.py --input_file {}'.format(file_location)], shell=True)
 
         return video_id
     else:
