@@ -18,3 +18,5 @@ more info on submodules: https://gist.github.com/gitaarik/8735255
 build image: `$ docker build -t jumpcutter-server:latest .` (in server directory)
 
 run container: `$ docker run -d -p 80:80 jumpcutter-server:latest`
+
+run with mapped upload folder: `docker run -dp 80:80 -v /<localpath>:/tmp/upload jumpcutter-server`
