@@ -1,18 +1,18 @@
 package com.eddex.jackle.jumpcutter;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.about);
     }
 
     /**
@@ -36,11 +36,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+            case R.id.convertvideo:
+                this.startActivity(new Intent(this, MainActivity.class));
+                return true;
             case R.id.myvideos:
                 this.startActivity(new Intent(this, MyVideosActivity.class));
-                return true;
-            case R.id.about:
-                this.startActivity(new Intent(this, AboutActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
