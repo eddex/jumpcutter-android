@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="convertvideo" id="">Convert video</string>
+    <string name="myvideos">My Videos</string>
+    <string name="about">About</string>
+</resources>
