@@ -4,13 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp" />
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_video_from_device"
+        android:textSize="28sp"
+        android:textAlignment="center" />
+
+    <!-- compiler suggested 0dp instead of wrap_content for better performance?  -->
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@null"
+        android:contentDescription="@string/uploadvideobutton"
+        app:srcCompat="@android:drawable/ic_menu_upload_you_tube"
+        android:layout_weight="1"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp" />
+
+    <TextView
+        android:id="@+id/editText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/or_use_a_youtube_url"
+        android:textSize="28sp"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/youtubeurlTextBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:inputType="textWebEditText"
+        android:hint="@string/hint_paste_youtube_url_here"
+        android:textAlignment="center"/>
+
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Button" />
+        android:textSize="20sp"
+        android:text="@string/uploadyoutubeurl" />
+
 </LinearLayout>

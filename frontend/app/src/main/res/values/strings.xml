@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">JumpCutter</string>
+    <string name="uploadvideobutton">upload a video</string>
+    <string name="uploadyoutubeurl">Continue</string>
+    <string name="select_video_from_device">Select Video from Device</string>
+    <string name="hint_paste_youtube_url_here">Paste youtube url here...</string>
+    <string name="or_use_a_youtube_url">Or use a YouTube URL</string>
 </resources>
