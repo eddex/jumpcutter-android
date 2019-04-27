@@ -129,7 +129,13 @@ def download_video():
     download_id  = request.args.get('download_id', None)
 
     if download_id is not None:
-        return 'ok'
+        file_location = None
+        try:
+            file_location = os.path.join(app.config['UPLOAD_FOLDER'], CONVERTED_VIDEOS[download_id])
+        except:
+            return 'error: invalid video_id param received :('
+
+        return app.send_static_file(file_location)
     else:
         return 'error: no download_id param received :('
 
