@@ -108,7 +108,8 @@ def process_video():
         converted_filename = original_filename[:dotIndex]+"_"+str(download_id)+original_filename[dotIndex:]
         CONVERTED_VIDEOS[download_id] = converted_filename
 
-        jumpcutter_command = 'python3 ./jumpcutter/jumpcutter.py --input_file {} --output_file {}'.format(file_location, converted_filename)
+        converted_file_full_name = os.path.join(app.config['UPLOAD_FOLDER'], converted_filename)
+        jumpcutter_command = 'python3 ./jumpcutter/jumpcutter.py --input_file {} --output_file {}'.format(file_location, converted_file_full_name)
         
         jumpcutter_command = append_param(jumpcutter_command, silent_threshold_name, silent_threshold)
         jumpcutter_command = append_param(jumpcutter_command, sounded_speed_name, sounded_speed)
