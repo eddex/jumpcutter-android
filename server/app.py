@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = '/tmp/upload'
 ALLOWED_EXTENSIONS = set(['mp4', 'wmv', 'avi'])
 
+UPLOADED_VIDEOS = {}
 CONVERTED_VIDEOS = {}
 
 app = Flask(__name__)
@@ -19,7 +20,7 @@ def allowed_file(filename):
 
 @app.route("/")
 def hello():
-    return 'Hello! Jumpcutter has converted {} videos!'.format(len(CONVERTED_VIDEOS))
+    return '<p>Hello!</p><p>Uploaded videos: {}</p><p>Converted videos: {}</p>'.format(len(CONVERTED_VIDEOS), len(UPLOADED_VIDEOS))
 
 
 @app.route('/upload', methods=['POST'])
@@ -42,7 +43,7 @@ def upload_video():
         file_location = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_location)
         video_id = uuid.uuid4().hex
-        CONVERTED_VIDEOS[video_id] = filename
+        UPLOADED_VIDEOS[video_id] = filename
 
         return video_id
     else:
@@ -52,16 +53,14 @@ def append_param(jumpcutter_command, param_name, param_value):
     '''
         append a command line parameter to the jumpcutter command if the value is set.
     '''
-
     if param_value is not None:
         jumpcutter_command = '{} --{} {}'.format(jumpcutter_command, param_name, param_value)
-    
     return jumpcutter_command
 
 @app.route('/process', methods=['GET'])
 def process_video():
     '''
-        processes the video.
+        processes the video and returns the download_id.
         example usage: https://server.ch?video_id=123&sounded_speed=2
 
         @params:
@@ -96,8 +95,20 @@ def process_video():
     frame_quality  = request.args.get(frame_quality_name, None)
 
     if video_id is not None:
-        file_location = os.path.join(app.config['UPLOAD_FOLDER'], CONVERTED_VIDEOS[video_id])
-        jumpcutter_command = 'python3 ./jumpcutter/jumpcutter.py --input_file {}'.format(file_location)
+        file_location = None
+        try:
+            file_location = os.path.join(app.config['UPLOAD_FOLDER'], UPLOADED_VIDEOS[video_id])
+        except:
+            return 'error: invalid video_id param received :('
+
+        # create unique filename for converted video
+        download_id = uuid.uuid4().hex
+        original_filename = UPLOADED_VIDEOS[video_id]
+        dotIndex = original_filename.rfind(".")
+        converted_filename = original_filename[:dotIndex]+"_"+str(download_id)+original_filename[dotIndex:]
+        CONVERTED_VIDEOS[download_id] = converted_filename
+
+        jumpcutter_command = 'python3 ./jumpcutter/jumpcutter.py --input_file {} --output_file {}'.format(file_location, converted_filename)
         
         jumpcutter_command = append_param(jumpcutter_command, silent_threshold_name, silent_threshold)
         jumpcutter_command = append_param(jumpcutter_command, sounded_speed_name, sounded_speed)
@@ -108,13 +119,18 @@ def process_video():
         jumpcutter_command = append_param(jumpcutter_command, frame_quality_name, frame_quality)
         
         subprocess.call(jumpcutter_command, shell=True)
-        return 'ok'
+        return download_id
     else:
-        return 'error: invalid or no video_id param received :('
+        return 'error: no video_id param received :('
 
 @app.route('/download', methods=['GET'])
 def download_video():
-    pass
+    download_id  = request.args.get('download_id', None)
+
+    if download_id is not None:
+        return 'ok'
+    else:
+        return 'error: no download_id param received :('
 
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):
