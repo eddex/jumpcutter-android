@@ -32,7 +32,10 @@ def use_youtube_video():
 
     video_id = uuid.uuid4().hex
     filename = 'youtube_{}.mp4'.format(video_id)
-    YouTube(url).streams.first().download(app.config['UPLOAD_FOLDER'], filename=filename)
+    try:
+        YouTube(url).streams.first().download(app.config['UPLOAD_FOLDER'], filename=filename)
+    except:
+        return 'error: can\'t parse youtube url :('
     UPLOADED_VIDEOS[video_id] = filename
     return video_id
 
