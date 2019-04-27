@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/sound_speed"
+        android:entryValues="@array/sound_speed_values"
+        android:key="list_preference_1"
+        android:title="List preference" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="advanced_options"
+        android:title="Advanced options" />
+
+</PreferenceScreen>
