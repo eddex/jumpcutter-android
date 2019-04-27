@@ -9,7 +9,7 @@ The server is used to edit the video by using [carykh's jumpcutter](https://gith
 
 requires ffmpeg: `sudo apt install ffmpeg`
 
-pull submodule: `git submodule init`
+clone with submodule: `git clone --recurse-submodules https://github.com/eddex/jumpcutter-android.git`
 
 more info on submodules: https://gist.github.com/gitaarik/8735255
 
