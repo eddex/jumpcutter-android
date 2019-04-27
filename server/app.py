@@ -53,7 +53,7 @@ def append_param(jumpcutter_command, param_name, param_value):
         append a command line parameter to the jumpcutter command if the value is set.
     '''
 
-    if param_value not None:
+    if param_value is not None:
         jumpcutter_command = '{} --{} {}'.format(jumpcutter_command, param_name, param_value)
     
     return jumpcutter_command
@@ -87,15 +87,15 @@ def process_video():
     frame_quality_name = 'frame_quality'
 
     video_id  = request.args.get('video_id', None)
-    silent_threshold  = request.args.get(silent_threshold, None)
-    sounded_speed  = request.args.get(sounded_speed, None)
-    silent_speed  = request.args.get(silent_speed, None)
-    frame_margin  = request.args.get(frame_margin, None)
-    sample_rate  = request.args.get(sample_rate, None)
-    frame_rate  = request.args.get(frame_rate, None)
-    frame_quality  = request.args.get(frame_quality, None)
+    silent_threshold  = request.args.get(silent_threshold_name, None)
+    sounded_speed  = request.args.get(sounded_speed_name, None)
+    silent_speed  = request.args.get(silent_speed_name, None)
+    frame_margin  = request.args.get(frame_margin_name, None)
+    sample_rate  = request.args.get(sample_rate_name, None)
+    frame_rate  = request.args.get(frame_rate_name, None)
+    frame_quality  = request.args.get(frame_quality_name, None)
 
-    if video_id not None:
+    if video_id is not None:
         file_location = os.path.join(app.config['UPLOAD_FOLDER'], CONVERTED_VIDEOS[video_id])
         jumpcutter_command = 'python3 ./jumpcutter/jumpcutter.py --input_file {}'.format(file_location)
         
