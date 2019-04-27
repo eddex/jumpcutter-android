@@ -3,6 +3,7 @@ import uuid
 import subprocess
 from flask import Flask, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+from pytube import YouTube
 
 UPLOAD_FOLDER = '/tmp/upload'
 ALLOWED_EXTENSIONS = set(['mp4', 'wmv', 'avi'])
@@ -22,6 +23,18 @@ def allowed_file(filename):
 def hello():
     return '<p>Hello!</p><p>Uploaded videos: {}</p><p>Converted videos: {}</p>'.format(len(CONVERTED_VIDEOS), len(UPLOADED_VIDEOS))
 
+@app.route('/youtube', methods=['GET'])
+def use_youtube_video():
+
+    url = request.args.get('url', None)
+    if url is None:
+        return 'error: no url param received :('
+
+    video_id = uuid.uuid4().hex
+    filename = 'youtube_{}.mp4'.format(video_id)
+    YouTube(url).streams.first().download(app.config['UPLOAD_FOLDER'], filename=filename)
+    UPLOADED_VIDEOS[video_id] = filename
+    return video_id
 
 @app.route('/upload', methods=['POST'])
 def upload_video():
@@ -29,8 +42,6 @@ def upload_video():
     # check if the post request has the file part
     if 'file' not in request.files:
         return 'error: no file :('
-    
-    # TODO: read other params
 
     # check if filename is set
     file = request.files['file']
@@ -86,6 +97,9 @@ def process_video():
     frame_quality_name = 'frame_quality'
 
     video_id  = request.args.get('video_id', None)
+    if video_id is None:
+        return 'error: no video_id param received :('
+
     silent_threshold  = request.args.get(silent_threshold_name, None)
     sounded_speed  = request.args.get(sounded_speed_name, None)
     silent_speed  = request.args.get(silent_speed_name, None)
@@ -94,35 +108,33 @@ def process_video():
     frame_rate  = request.args.get(frame_rate_name, None)
     frame_quality  = request.args.get(frame_quality_name, None)
 
-    if video_id is not None:
-        file_location = None
-        try:
-            file_location = os.path.join(app.config['UPLOAD_FOLDER'], UPLOADED_VIDEOS[video_id])
-        except:
-            return 'error: invalid video_id param received :('
+    file_location = None
+    try:
+        file_location = os.path.join(app.config['UPLOAD_FOLDER'], UPLOADED_VIDEOS[video_id])
+    except:
+        return 'error: invalid video_id param received :('
 
-        # create unique filename for converted video
-        download_id = uuid.uuid4().hex
-        original_filename = UPLOADED_VIDEOS[video_id]
-        dotIndex = original_filename.rfind(".")
-        converted_filename = original_filename[:dotIndex]+"_"+str(download_id)+original_filename[dotIndex:]
-        CONVERTED_VIDEOS[download_id] = converted_filename
+    # create unique filename for converted video
+    download_id = uuid.uuid4().hex
+    original_filename = UPLOADED_VIDEOS[video_id]
+    dotIndex = original_filename.rfind(".")
+    converted_filename = original_filename[:dotIndex]+"_"+str(download_id)+original_filename[dotIndex:]
+    CONVERTED_VIDEOS[download_id] = converted_filename
 
-        converted_file_full_name = os.path.join(app.config['UPLOAD_FOLDER'], converted_filename)
-        jumpcutter_command = 'python3 ./jumpcutter/jumpcutter.py --input_file {} --output_file {}'.format(file_location, converted_file_full_name)
+    converted_file_full_name = os.path.join(app.config['UPLOAD_FOLDER'], converted_filename)
+    jumpcutter_command = 'python3 ./jumpcutter/jumpcutter.py --input_file {} --output_file {}'.format(file_location, converted_file_full_name)
+    
+    jumpcutter_command = append_param(jumpcutter_command, silent_threshold_name, silent_threshold)
+    jumpcutter_command = append_param(jumpcutter_command, sounded_speed_name, sounded_speed)
+    jumpcutter_command = append_param(jumpcutter_command, silent_speed_name, silent_speed)
+    jumpcutter_command = append_param(jumpcutter_command, frame_margin_name, frame_margin)
+    jumpcutter_command = append_param(jumpcutter_command, sample_rate_name, sample_rate)
+    jumpcutter_command = append_param(jumpcutter_command, frame_rate_name, frame_rate)
+    jumpcutter_command = append_param(jumpcutter_command, frame_quality_name, frame_quality)
+    
+    subprocess.call(jumpcutter_command, shell=True)
+    return download_id
         
-        jumpcutter_command = append_param(jumpcutter_command, silent_threshold_name, silent_threshold)
-        jumpcutter_command = append_param(jumpcutter_command, sounded_speed_name, sounded_speed)
-        jumpcutter_command = append_param(jumpcutter_command, silent_speed_name, silent_speed)
-        jumpcutter_command = append_param(jumpcutter_command, frame_margin_name, frame_margin)
-        jumpcutter_command = append_param(jumpcutter_command, sample_rate_name, sample_rate)
-        jumpcutter_command = append_param(jumpcutter_command, frame_rate_name, frame_rate)
-        jumpcutter_command = append_param(jumpcutter_command, frame_quality_name, frame_quality)
-        
-        subprocess.call(jumpcutter_command, shell=True)
-        return download_id
-    else:
-        return 'error: no video_id param received :('
 
 @app.route('/download', methods=['GET'])
 def download_video():
