@@ -23,6 +23,7 @@ def allowed_file(filename):
 def hello():
     return '<p>Hello!</p><p>Uploaded videos: {}</p><p>Converted videos: {}</p>'.format(len(CONVERTED_VIDEOS), len(UPLOADED_VIDEOS))
 
+
 @app.route('/youtube', methods=['GET'])
 def use_youtube_video():
 
@@ -38,6 +39,7 @@ def use_youtube_video():
         return 'error: can\'t parse youtube url :('
     UPLOADED_VIDEOS[video_id] = filename
     return video_id
+
 
 @app.route('/upload', methods=['POST'])
 def upload_video():
@@ -63,6 +65,7 @@ def upload_video():
     else:
         return 'error: not a video file :('
 
+
 def append_param(jumpcutter_command, param_name, param_value):
     '''
         append a command line parameter to the jumpcutter command if the value is set.
@@ -70,6 +73,7 @@ def append_param(jumpcutter_command, param_name, param_value):
     if param_value is not None:
         jumpcutter_command = '{} --{} {}'.format(jumpcutter_command, param_name, param_value)
     return jumpcutter_command
+
 
 @app.route('/process', methods=['GET'])
 def process_video():
@@ -150,6 +154,7 @@ def download_video():
             return 'error: invalid video_id param received :('
     else:
         return 'error: no download_id param received :('
+
 
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):
