@@ -12,11 +12,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, new SettingsActivityInitializer())
+                .commit();
     }
-
-    @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-    }
-
-
 }

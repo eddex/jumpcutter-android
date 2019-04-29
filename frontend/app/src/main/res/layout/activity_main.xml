@@ -31,7 +31,8 @@
         app:srcCompat="@android:drawable/ic_menu_upload_you_tube"
         android:layout_weight="1"
         android:scaleType="fitXY"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:onClick="convertVideo"/>
 
     <Space
         android:layout_width="match_parent"
