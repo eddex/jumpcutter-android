@@ -138,6 +138,7 @@ def process_video():
     jumpcutter_command = append_param(jumpcutter_command, sample_rate_name, sample_rate)
     jumpcutter_command = append_param(jumpcutter_command, frame_rate_name, frame_rate)
     jumpcutter_command = append_param(jumpcutter_command, frame_quality_name, frame_quality)
+    print (jumpcutter_command)
     
     subprocess.call(jumpcutter_command, shell=True)
     return download_id
