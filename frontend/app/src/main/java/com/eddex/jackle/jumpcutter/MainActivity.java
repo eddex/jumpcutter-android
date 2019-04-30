@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.convertvideo:
-                // already at this page, send toast?
             case R.id.myvideos:
                 this.startActivity(new Intent(this, MyVideosActivity.class));
                 return true;
