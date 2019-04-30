@@ -5,4 +5,9 @@
     <string name="select_video_from_device">Select Video from Device</string>
     <string name="hint_paste_youtube_url_here">Paste youtube url here...</string>
     <string name="or_use_a_youtube_url">Or use a YouTube URL</string>
+    <string name="about_jumpcutter">About JumpCutter</string>
+    <string name="about_version">Version: 1.0.0.0</string>
+    <string name="about_dev1">Dev 1: Palkoska Marco</string>
+    <string name="about_dev2">Dev 2: Luthiger Yannick</string>
+    <string name="copyright_notice">© 2019 Palkoska Marco, Luthiger Yannick All Rights Reserved</string>
 </resources>
