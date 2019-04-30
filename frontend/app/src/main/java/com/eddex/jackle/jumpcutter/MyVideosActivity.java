@@ -36,9 +36,6 @@ public class MyVideosActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.convertvideo:
-                this.startActivity(new Intent(this, MainActivity.class));
-                return true;
             case R.id.about:
                 this.startActivity(new Intent(this, AboutActivity.class));
                 return true;
