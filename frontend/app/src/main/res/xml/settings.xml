@@ -1,15 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Options">
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/sound_speed"
+            android:entryValues="@array/sound_speed"
+            android:key="list_preference_sound_speed"
+            android:title="Sound Speed"
+            android:summary="Selected sound speed: %s" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/silence_speed"
+            android:entryValues="@array/silence_speed"
+            android:key="list_preference_silence_speed"
+            android:title="Silence Speed"
+            android:summary="Selected silence speed: %s" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/silence_threshold"
+            android:entryValues="@array/silence_threshold"
+            android:key="list_preference_silence_threshold"
+            android:title="Silence Threshold"
+            android:summary="Selected silence threshold: %s" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/frame_margin"
+            android:entryValues="@array/frame_margin"
+            android:key="list_preference_frame_margin"
+            android:title="Frame Margin"
+            android:summary="Selected frame margin: %s" />
+    </PreferenceCategory>
 
-    <ListPreference
-        android:defaultValue="1"
-        android:entries="@array/sound_speed"
-        android:entryValues="@array/sound_speed_values"
-        android:key="list_preference_1"
-        android:title="List preference" />
     <SwitchPreference
         android:defaultValue="false"
-        android:key="advanced_options"
-        android:title="Advanced options" />
+        android:key="advanced_options_switch"
+        android:title="Enable advanced options" />
 
+    <PreferenceCategory
+        android:title="Advanced Options"
+        android:dependency="advanced_options_switch">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="ADVANCED CHECKBOX"
+            android:title="ADVANCED CHECKBOX" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/sound_speed"
+            android:entryValues="@array/sound_speed"
+            android:key="TODO"
+            android:title="TODO"
+            android:summary="TODO: %s" />
+    </PreferenceCategory>
 </PreferenceScreen>
