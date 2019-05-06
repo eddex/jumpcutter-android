@@ -1,5 +1,7 @@
 package com.eddex.jackle.jumpcutter.internet;
 
+import android.net.Uri;
+
 import okhttp3.HttpUrl;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
@@ -19,7 +21,7 @@ public class ServerWrapper {
         return true;
     }
 
-    public String uploadVideo(String videoPath) {
+    public String uploadVideo(Uri videoPath) {
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM) // TODO: check if this type is correct

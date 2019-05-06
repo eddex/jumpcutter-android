@@ -40,7 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
     {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
-
         server.uploadVideo(localPath);
     }
 
