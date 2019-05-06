@@ -36,6 +36,24 @@ public class ServerWrapper {
         return null; // TODO: return video id returned by the request
     }
 
+    public String convertYouTubeVideo(String youtubeUrl) {
+
+        HttpUrl url = new HttpUrl.Builder()
+                .scheme("http")
+                .host("0.0.0.0:80")
+                .addPathSegment("youtube")
+                .addQueryParameter("url", youtubeUrl)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        // TODO: send request asynchronously.
+
+        return null;
+    }
+
     public String processVideo(String videoId) {
 
         HttpUrl processUrl = new ProcessUrlBuilder()
