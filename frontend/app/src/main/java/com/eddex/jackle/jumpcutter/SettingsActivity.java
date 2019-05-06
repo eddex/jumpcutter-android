@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
+
 public class SettingsActivity extends AppCompatActivity {
+    ServerWrapper server = new ServerWrapper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
 
-        // TODO: upload video
+        server.uploadVideo(localPath);
     }
 
     private void UploadYoutubeVideo(Intent intent)
@@ -47,7 +50,6 @@ public class SettingsActivity extends AppCompatActivity {
         String youtubeUrl = extras.getString(Intent.EXTRA_TEXT);
 
         // TODO: check if actually a youtube link
-        // TODO: download youtube video
-        // TODO: upload youtube video to service
+        // TODO: upload youtube link to service
     }
 }

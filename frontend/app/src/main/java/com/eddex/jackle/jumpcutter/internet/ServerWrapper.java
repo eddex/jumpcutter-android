@@ -19,7 +19,7 @@ public class ServerWrapper {
         return true;
     }
 
-    public String uploadVideo(Object video) {
+    public String uploadVideo(String videoPath) {
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM) // TODO: check if this type is correct
