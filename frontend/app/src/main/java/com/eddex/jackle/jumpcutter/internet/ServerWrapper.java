@@ -2,15 +2,24 @@ package com.eddex.jackle.jumpcutter.internet;
 
 import android.net.Uri;
 
+import java.io.IOException;
+
 import okhttp3.HttpUrl;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ServerWrapper {
 
+    private final OkHttpClient okHttpClient;
     private final String Scheme = "https";
     private final String Host = "jumpcutter.letum.ch";
+
+    public ServerWrapper(OkHttpClient okHttpClient) {
+        this.okHttpClient = okHttpClient;
+    }
 
     /**
      * Get a message from the server.
@@ -28,9 +37,17 @@ public class ServerWrapper {
                 .get()
                 .build();
 
-        // TODO: check if connection to server works.
-
-        return true;
+        try {
+            Response response = okHttpClient.newCall(request).execute();
+            System.out.print(response.body());
+            return response.isSuccessful();
+        }
+        catch (IOException e) {
+            return false;
+        }
+        catch (IllegalStateException e) {
+            return false;
+        }
     }
 
     /**

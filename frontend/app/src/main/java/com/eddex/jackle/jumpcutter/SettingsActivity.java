@@ -8,8 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
 
+import okhttp3.OkHttpClient;
+
 public class SettingsActivity extends AppCompatActivity {
-    ServerWrapper server = new ServerWrapper();
+
+    ServerWrapper server = new ServerWrapper(new OkHttpClient.Builder().build());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
