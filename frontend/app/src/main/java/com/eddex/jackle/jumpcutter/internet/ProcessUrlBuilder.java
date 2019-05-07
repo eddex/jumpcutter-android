@@ -2,7 +2,7 @@ package com.eddex.jackle.jumpcutter.internet;
 
 import okhttp3.HttpUrl;
 
-public class ProcessUrlBuilder {
+class ProcessUrlBuilder {
 
     private String host;
     private String videoId;
@@ -14,76 +14,76 @@ public class ProcessUrlBuilder {
     private String frameRate;
     private String frameQuality;
 
-    public ProcessUrlBuilder withHost(String host) {
+    ProcessUrlBuilder withHost(String host) {
 
         this.host = host;
         return this;
     }
 
-    public ProcessUrlBuilder withVideoId(String videoId) {
+    ProcessUrlBuilder withVideoId(String videoId) {
 
         this.videoId = videoId;
         return this;
     }
 
-    public ProcessUrlBuilder withSilentThreshold(String silentThreshold) {
+    ProcessUrlBuilder withSilentThreshold(String silentThreshold) {
 
         this.silentThreshold = silentThreshold;
         return this;
     }
 
-    public ProcessUrlBuilder withSoundedSpeed(String soundedSpeed) {
+    ProcessUrlBuilder withSoundedSpeed(String soundedSpeed) {
 
         this.soundedSpeed = soundedSpeed;
         return this;
     }
 
-    public ProcessUrlBuilder withSilentSpeed(String silentSpeed) {
+    ProcessUrlBuilder withSilentSpeed(String silentSpeed) {
 
         this.silentSpeed = silentSpeed;
         return this;
     }
 
-    public ProcessUrlBuilder withFrameMargin(String frameMargin) {
+    ProcessUrlBuilder withFrameMargin(String frameMargin) {
 
         this.frameMargin = frameMargin;
         return this;
     }
 
-    public ProcessUrlBuilder withSampleRate(String sampleRate) {
+    ProcessUrlBuilder withSampleRate(String sampleRate) {
 
         this.sampleRate = sampleRate;
         return this;
     }
 
-    public ProcessUrlBuilder withFrameRate(String frameRate) {
+    ProcessUrlBuilder withFrameRate(String frameRate) {
 
         this.frameRate = frameRate;
         return this;
     }
 
-    public ProcessUrlBuilder withFrameQuality(String frameQuality) {
+    ProcessUrlBuilder withFrameQuality(String frameQuality) {
 
         this.frameQuality = frameQuality;
         return this;
     }
 
-    public HttpUrl Build() {
+    HttpUrl build() {
 
-        HttpUrl url = new HttpUrl.Builder()
-            .scheme("http")
+        HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
+            .scheme("https")
             .host(this.host)
-            .addPathSegment("process")
-            .addQueryParameter("video_id", this.videoId)
-            .addQueryParameter("silent_threshold", this.silentThreshold)
-            .addQueryParameter("sounded_speed", this.soundedSpeed)
-            .addQueryParameter("silent_speed", this.silentSpeed)
-            .addQueryParameter("frame_margin", this.frameMargin)
-            .addQueryParameter("sample_rate", this.sampleRate)
-            .addQueryParameter("frame_rate", this.frameRate)
-            .addQueryParameter("frame_quality", this.frameQuality)
-            .build();
+            .addPathSegment("process");
 
-        return url;
+        if (this.videoId != null) urlBuilder.addQueryParameter("video_id", this.videoId);
+        if (this.silentThreshold != null) urlBuilder.addQueryParameter("silent_threshold", this.silentThreshold);
+        if (this.soundedSpeed != null) urlBuilder.addQueryParameter("sounded_speed", this.soundedSpeed);
+        if (this.silentSpeed != null) urlBuilder.addQueryParameter("silent_speed", this.silentSpeed);
+        if (this.frameMargin != null) urlBuilder.addQueryParameter("frame_margin", this.frameMargin);
+        if (this.sampleRate != null) urlBuilder.addQueryParameter("sample_rate", this.sampleRate);
+        if (this.frameRate != null) urlBuilder.addQueryParameter("frame_rate", this.frameRate);
+        if (this.frameQuality != null) urlBuilder.addQueryParameter("frame_quality", this.frameQuality);
+
+        return urlBuilder.build();
     }
 }

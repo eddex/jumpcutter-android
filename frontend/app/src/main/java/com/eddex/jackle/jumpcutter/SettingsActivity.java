@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         String youtubeUrl = extras.getString(Intent.EXTRA_TEXT);
         if (youtubeUrl.contains("https://youtu.be/")) // shared from youtube app
         {
-            server.convertYouTubeVideo(youtubeUrl);
+            server.downloadYouTubeVideo(youtubeUrl);
         }
     }
 }
