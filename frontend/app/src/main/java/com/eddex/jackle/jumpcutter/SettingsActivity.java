@@ -47,8 +47,9 @@ public class SettingsActivity extends AppCompatActivity {
     {
         Bundle extras = intent.getExtras();
         String youtubeUrl = extras.getString(Intent.EXTRA_TEXT);
-
-        // TODO: check if actually a youtube link
-        // TODO: upload youtube link to service
+        if (youtubeUrl.contains("https://youtu.be/")) // shared from youtube app
+        {
+            server.convertYouTubeVideo(youtubeUrl);
+        }
     }
 }
