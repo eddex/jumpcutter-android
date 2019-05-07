@@ -2,6 +2,7 @@ package com.eddex.jackle.jumpcutter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import java.net.URI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,22 +53,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void convertVideo(View view) {
+    /**
+     * Select a video from your local filesystem
+     * The selected
+     * @param view
+     */
+    public void selectLocalVideo(View view) {
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Video"), 0);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (resultCode == Activity.RESULT_CANCELED)
-        {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_CANCELED) {
             return;
         }
-        else
-        {
-            this.startActivity(new Intent(this, SettingsActivity.class));
+        else {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.setType("video/from_main_activity");
+            intent.putExtra("videoUri", data.getData());
+            this.startActivity(intent);
         }
     }
 }
