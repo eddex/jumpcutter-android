@@ -19,37 +19,69 @@ public class SettingsActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(android.R.id.content, new SettingsActivityInitializer())
                 .commit();
-        HandleActivityCall();
+        handleActivityCall();
     }
 
-    public void HandleActivityCall()
-    {
+    /**
+     * Handles the different ways to share videos or video paths to this app
+     */
+    private void handleActivityCall() {
         Intent intent = getIntent();
         String type = intent.getType();
-        if (type.contains("video/")) // sent a video
-        {
-            this.UploadLocalVideo(intent);
+
+        //sent from main activity
+        if (type.startsWith("video/from_main_activity")) {
+            this.uploadSelectedLocalVideo(intent);
         }
-        else if (type.contains("text/")) // expecting youtube url
-        {
-            this.UploadYoutubeVideo(intent);
+        // video from filesystem sent per Share Button
+        else if (type.startsWith("video/")) {
+            this.uploadSharedLocalVideo(intent);
+        }
+        // youtube link share per share button (in youtube app)
+        else if (type.startsWith("text/")) {
+            this.uploadSharedYoutubeVideo(intent);
         }
     }
 
-    private void UploadLocalVideo(Intent intent)
-    {
+    /**
+     * Uploads local video path to the server
+     * Video was selected from the jumpcutter main activity
+     * @param intent
+     */
+    private void uploadSelectedLocalVideo(Intent intent) {
+        Bundle extras = intent.getExtras();
+        String path = extras.getString("videoUri");
+        if (path == null) {
+            throw new NullPointerException("uir path was null???");
+        }
+        Uri localUri = Uri.parse(path);
+        server.uploadVideo(localUri);
+    }
+
+    /**
+     * Uploads local video path to the server
+     * Video was shared from local filesystem, per share button
+     * @param intent
+     */
+    private void uploadSharedLocalVideo(Intent intent) {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
         server.uploadVideo(localPath);
     }
 
-    private void UploadYoutubeVideo(Intent intent)
-    {
+    /**
+     * Uploads a youtube video to the server
+     * Youtube link shared per youtube app
+     * @param intent
+     */
+    private void uploadSharedYoutubeVideo(Intent intent) {
         Bundle extras = intent.getExtras();
         String youtubeUrl = extras.getString(Intent.EXTRA_TEXT);
-        if (youtubeUrl.contains("https://youtu.be/")) // shared from youtube app
-        {
+
+        if (youtubeUrl.contains("https://youtu.be/")) {
             server.downloadYouTubeVideo(youtubeUrl);
+        } else {
+            throw new IllegalArgumentException("not a youtube link");
         }
     }
 }
