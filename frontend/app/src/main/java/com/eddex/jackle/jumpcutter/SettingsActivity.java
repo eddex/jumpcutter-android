@@ -6,13 +6,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
+import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
-
-import okhttp3.OkHttpClient;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    ServerWrapper server = new ServerWrapper(new OkHttpClient.Builder().build());
+    ServerWrapper server;
+
+    public SettingsActivity() {
+
+        ServerComponent component = DaggerServerComponent.create();
+        this.server = component.provideServerWrapper();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

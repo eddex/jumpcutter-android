@@ -4,6 +4,8 @@ import android.net.Uri;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import okhttp3.HttpUrl;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -17,6 +19,7 @@ public class ServerWrapper {
     private final String Scheme = "https";
     private final String Host = "jumpcutter.letum.ch";
 
+    @Inject
     public ServerWrapper(OkHttpClient okHttpClient) {
         this.okHttpClient = okHttpClient;
     }
