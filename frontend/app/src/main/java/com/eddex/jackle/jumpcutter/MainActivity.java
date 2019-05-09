@@ -1,8 +1,11 @@
 package com.eddex.jackle.jumpcutter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +13,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
+import com.eddex.jackle.jumpcutter.injection.ServerComponent;
+import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
 
 import java.net.URI;
 
@@ -19,6 +27,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ServerComponent component = DaggerServerComponent.create();
+        ServerWrapper server = component.provideServerWrapper();
+        Context context = getApplicationContext();
+
+        AsyncTask.execute(() -> {
+            Boolean online = server.ping();
+                runOnUiThread(() -> {
+                    String message = online ? "server online: ready to convert." : "server offline: try again later.";
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                });
+        });
     }
 
     /**

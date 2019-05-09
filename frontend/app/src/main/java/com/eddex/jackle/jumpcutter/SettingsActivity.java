@@ -3,12 +3,15 @@ package com.eddex.jackle.jumpcutter;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
+
+import java.io.File;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -64,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
             throw new NullPointerException("videoUri or path was null???");
         }
         Uri localUri = Uri.parse(path);
-        server.uploadVideo(localUri);
+        AsyncTask.execute(() -> server.uploadVideo(localUri));
     }
 
     /**
@@ -75,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void uploadSharedLocalVideo(Intent intent) {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
-        server.uploadVideo(localPath);
+        AsyncTask.execute(() -> server.uploadVideo(localPath));
     }
 
     /**

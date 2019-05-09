@@ -5,6 +5,8 @@ import okhttp3.HttpUrl;
 class ProcessUrlBuilder {
 
     private String host;
+    private int port = 80;
+    private String scheme = "https";
     private String videoId;
     private String silentThreshold;
     private String soundedSpeed;
@@ -17,6 +19,16 @@ class ProcessUrlBuilder {
     ProcessUrlBuilder withHost(String host) {
 
         this.host = host;
+        return this;
+    }
+
+    ProcessUrlBuilder withPort(int port) {
+        this.port = port;
+        return this;
+    }
+
+    ProcessUrlBuilder withScheme(String scheme) {
+        this.scheme = scheme;
         return this;
     }
 
@@ -71,9 +83,11 @@ class ProcessUrlBuilder {
     HttpUrl build() {
 
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
-            .scheme("https")
+            .scheme(this.scheme)
             .host(this.host)
             .addPathSegment("process");
+
+        if (this.port != 80) urlBuilder.port(this.port);
 
         if (this.videoId != null) urlBuilder.addQueryParameter("video_id", this.videoId);
         if (this.silentThreshold != null) urlBuilder.addQueryParameter("silent_threshold", this.silentThreshold);

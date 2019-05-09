@@ -8,13 +8,74 @@ import okhttp3.HttpUrl;
 public class ProcessUrlBuilderTest {
 
     @Test
-    public void build_WithHost_SchemeIsHttpsAndProcessPathSegmentAdded() {
+    public void build_WithHost_DefaultSchemeIsHttpsAndProcessPathSegmentAdded() {
 
         HttpUrl url = new ProcessUrlBuilder()
                 .withHost("test.tt")
                 .build();
 
         Assert.assertEquals("https://test.tt/process", url.toString());
+    }
+
+    @Test
+    public void build_WithSchemeHttp_SchemeIsHttp() {
+
+        HttpUrl url = new ProcessUrlBuilder()
+                .withHost("test.tt")
+                .withScheme("http")
+                .build();
+
+        Assert.assertEquals("http://test.tt/process", url.toString());
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void build_WithInvalidScheme_ThrowsIllegalArgumentException() {
+
+        new ProcessUrlBuilder()
+            .withHost("test.tt")
+            .withScheme("asd")
+            .build();
+    }
+
+    @Test
+    public void build_WithPort_PortAdded() {
+
+        HttpUrl url = new ProcessUrlBuilder()
+                .withHost("test.tt")
+                .withPort(8080)
+                .build();
+
+        Assert.assertEquals("https://test.tt:8080/process", url.toString());
+    }
+
+    @Test
+    public void build_WithPort80_DefaultPortIgnored() {
+
+        HttpUrl url = new ProcessUrlBuilder()
+                .withHost("test.tt")
+                .withPort(80)
+                .build();
+
+        Assert.assertEquals("https://test.tt/process", url.toString());
+    }
+
+    @Test
+    public void build_NoPort_DefaultPortUsed() {
+
+        HttpUrl url = new ProcessUrlBuilder()
+                .withHost("test.tt")
+                .build();
+
+        Assert.assertEquals("https://test.tt/process", url.toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void build_InvalidPort_ThrowsIllegalArgumentException() {
+
+        new ProcessUrlBuilder()
+                .withHost("test.tt")
+                .withPort(0)
+                .build();
     }
 
     @Test
@@ -103,5 +164,27 @@ public class ProcessUrlBuilderTest {
                 .build();
 
         Assert.assertEquals("https://test.tt/process?frame_quality=100", url.toString());
+    }
+
+    @Test
+    public void build_WithAllSettings_UrlCorrectlyConstructed() {
+
+        HttpUrl url = new ProcessUrlBuilder()
+                .withHost("test.tt")
+                .withPort(8080)
+                .withVideoId("1")
+                .withSilentThreshold("2")
+                .withSoundedSpeed("3")
+                .withSilentSpeed("4")
+                .withFrameMargin("5")
+                .withSampleRate("6")
+                .withFrameRate("7")
+                .withFrameQuality("8")
+                .withFrameQuality("9")
+                .build();
+
+        Assert.assertEquals(
+            "https://test.tt:8080/process?video_id=1&silent_threshold=2&sounded_speed=3&silent_speed=4&frame_margin=5&sample_rate=6&frame_rate=7&frame_quality=9",
+            url.toString());
     }
 }

@@ -2,11 +2,13 @@ package com.eddex.jackle.jumpcutter.internet;
 
 import android.net.Uri;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
 
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -16,8 +18,9 @@ import okhttp3.Response;
 public class ServerWrapper {
 
     private final OkHttpClient okHttpClient;
-    private final String Scheme = "https";
-    private final String Host = "jumpcutter.letum.ch";
+    private final String Scheme = "http";
+    private final String Host = "jumpcutter.letum.ch"; // on emulator localhost = 10.0.2.2
+    private final int Port = 80;
 
     @Inject
     public ServerWrapper(OkHttpClient okHttpClient) {
@@ -33,7 +36,10 @@ public class ServerWrapper {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
+                //.port(this.Port)
                 .build();
+
+        System.out.println("ServerWrapper: ping() " + url);
 
         Request request = new Request.Builder()
                 .url(url)
@@ -41,7 +47,7 @@ public class ServerWrapper {
                 .build();
 
         try {
-            Response response = okHttpClient.newCall(request).execute();
+            Response response = this.okHttpClient.newCall(request).execute();
             System.out.print(response.body());
             return response.isSuccessful();
         }
@@ -55,20 +61,28 @@ public class ServerWrapper {
 
     /**
      * Upload a video from the local file system to the server.
-     * @param videoPath: The path to the video file on the file system.
+     * @param video: The video file on the local file system.
      * @return The video id. This id can be used for the processVideo() method.
      */
-    public String uploadVideo(Uri videoPath) {
+    public String uploadVideo(Uri video) {
 
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
+                //.port(this.Port)
                 .addPathSegment("upload")
                 .build();
 
+        File f = new File("exit.txt"); // TODO: get file from video uri
+        System.out.println("ServerWrapper: uploadVideo(), file exists: " + f.exists());
+        System.out.println("File: " + video);
+
         RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM) // TODO: check if this type is correct
-                //.addPart() // TODO: add video to POST request
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(
+                        "file",
+                        f.getName(),
+                        RequestBody.create(MediaType.parse("video/"), f))
                 .build();
 
         Request request = new Request.Builder()
@@ -76,7 +90,17 @@ public class ServerWrapper {
                 .post(requestBody)
                 .build();
 
-        return null; // TODO: return video id returned by the request
+        try {
+            Response response = this.okHttpClient.newCall(request).execute();
+            System.out.print(response.body());
+            return response.body().string();
+        }
+        catch (IOException e) {
+            return null;
+        }
+        catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     /**
@@ -89,6 +113,7 @@ public class ServerWrapper {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
+                //.port(this.Port)
                 .addPathSegment("youtube")
                 .addQueryParameter("url", youtubeUrl)
                 .build();
@@ -113,6 +138,7 @@ public class ServerWrapper {
 
         HttpUrl url = new ProcessUrlBuilder()
                 .withHost(this.Host)
+                .withPort(this.Port)
                 .withSoundedSpeed("1.2")
                 .withSilentSpeed("99")
                 .build();
@@ -135,6 +161,7 @@ public class ServerWrapper {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
+                //.port(this.Port)
                 .addPathSegment("download")
                 .addQueryParameter("download_id", downloadId)
                 .build();
