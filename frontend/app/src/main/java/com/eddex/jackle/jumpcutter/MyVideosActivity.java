@@ -3,6 +3,7 @@ package com.eddex.jackle.jumpcutter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
@@ -41,7 +42,11 @@ public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyc
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        // gets the file and parses teh path to an uri
+        Uri intentUri = Uri.parse(adapter.getItem(position).getPath());
+        intent.setDataAndType(intentUri, "video/*");
+        startActivity(intent);
     }
 
     private void FillViewWithVideos() {
