@@ -58,7 +58,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public int getItemCount() {
-        return mData.length;
+        return (mData == null) ?  0 : mData.length;
     }
 
     // stores and recycles views as they are scrolled off screen
