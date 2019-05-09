@@ -48,7 +48,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
         File video = mData[position];
         holder.myTextView.setText(video.getName());
 
-        Bitmap bmThumbnail = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
+        Bitmap bmThumbnail = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
         holder.thumbnail.setImageBitmap(bmThumbnail);
     }
 
