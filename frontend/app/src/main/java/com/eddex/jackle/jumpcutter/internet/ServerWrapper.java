@@ -1,6 +1,6 @@
 package com.eddex.jackle.jumpcutter.internet;
 
-import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class ServerWrapper {
      * @param video: The video file on the local file system.
      * @return The video id. This id can be used for the processVideo() method.
      */
-    public String uploadVideo(Uri video) {
+    public String uploadVideo(String video) {
 
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
@@ -73,9 +73,9 @@ public class ServerWrapper {
                 .addPathSegment("upload")
                 .build();
 
-        File f = new File(video.getPath()); // TODO: get file from video uri
-        System.out.println("ServerWrapper: uploadVideo(), file exists: " + f.exists());
-        System.out.println("File: " + video);
+        File f = new File(video); // TODO: get file from video uri
+        Log.d("ServerWrapper", "uploadVideo(), file exists: " + f.exists());
+        Log.d("ServerWrapper", "File: " + video);
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -92,7 +92,7 @@ public class ServerWrapper {
 
         try {
             Response response = this.okHttpClient.newCall(request).execute();
-            System.out.print(response.body());
+            Log.d("ServerWrapper", response.body().toString());
             return response.body().string();
         }
         catch (IOException e) {
@@ -125,9 +125,9 @@ public class ServerWrapper {
 
         try {
             Response response = this.okHttpClient.newCall(request).execute();
-            System.out.print(response.body());
+            Log.d("ServerWrapper", response.body().toString());
             String processId = response.body().string();
-            System.out.println(processId);
+            Log.d("ServerWrapper", processId);
             return processId;
         }
         catch (IOException e) {

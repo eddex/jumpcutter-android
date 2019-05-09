@@ -2,15 +2,18 @@ package com.eddex.jackle.jumpcutter;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -70,7 +73,26 @@ public class SettingsActivity extends AppCompatActivity {
             throw new NullPointerException("videoUri or path was null???");
         }
         Uri localUri = Uri.parse(path);
-        AsyncTask.execute(() -> server.uploadVideo(localUri));
+        AsyncTask.execute(() -> {
+            String filePath = null;
+            Log.d("","URI = "+ localUri);
+            if (localUri != null && "content".equals(localUri.getScheme())) {
+                Cursor cursor = this.getContentResolver().query(
+                    localUri,
+                    new String[] { android.provider.MediaStore.Video.VideoColumns.DATA },
+                    null,
+                    null,
+                    null);
+                cursor.moveToFirst();
+                filePath = cursor.getString(0);
+                cursor.close();
+            } else {
+                filePath = localUri.getPath();
+            }
+            Log.d("","Chosen path = "+ filePath);
+            String id = server.uploadVideo(filePath);
+            runOnUiThread(() -> processId = id);
+        });
     }
 
     /**
@@ -81,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void uploadSharedLocalVideo(Intent intent) {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
-        AsyncTask.execute(() -> server.uploadVideo(localPath));
+        AsyncTask.execute(() -> server.uploadVideo(localPath.toString()));
     }
 
     /**
