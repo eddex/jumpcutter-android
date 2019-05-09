@@ -13,10 +13,6 @@ import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 public class SettingsActivity extends AppCompatActivity {
 
     ServerWrapper server;
