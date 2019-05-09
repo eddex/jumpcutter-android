@@ -73,7 +73,7 @@ public class ServerWrapper {
                 .addPathSegment("upload")
                 .build();
 
-        File f = new File("exit.txt"); // TODO: get file from video uri
+        File f = new File(video.getPath()); // TODO: get file from video uri
         System.out.println("ServerWrapper: uploadVideo(), file exists: " + f.exists());
         System.out.println("File: " + video);
 
@@ -123,9 +123,19 @@ public class ServerWrapper {
                 .get()
                 .build();
 
-        // TODO: send request asynchronously.
-
-        return null;
+        try {
+            Response response = this.okHttpClient.newCall(request).execute();
+            System.out.print(response.body());
+            String processId = response.body().string();
+            System.out.println(processId);
+            return processId;
+        }
+        catch (IOException e) {
+            return null;
+        }
+        catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     /**

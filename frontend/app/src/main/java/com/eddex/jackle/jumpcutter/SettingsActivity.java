@@ -11,11 +11,14 @@ import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
 
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class SettingsActivity extends AppCompatActivity {
 
     ServerWrapper server;
+    String processId;
+    String downloadId;
 
     public SettingsActivity() {
 
@@ -91,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
         String youtubeUrl = extras.getString(Intent.EXTRA_TEXT);
 
         if (youtubeUrl.contains("https://youtu.be/")) {
-            server.downloadYouTubeVideo(youtubeUrl);
+            AsyncTask.execute(() -> this.processId = server.downloadYouTubeVideo(youtubeUrl));
         } else {
             throw new IllegalArgumentException("not a youtube link");
         }
