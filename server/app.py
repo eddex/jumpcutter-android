@@ -32,10 +32,16 @@ def use_youtube_video():
         return 'error: no url param received :('
 
     video_id = uuid.uuid4().hex
-    filename = 'youtube_{}.mp4'.format(video_id)
+    filename = 'youtube_{}'.format(video_id)
     try:
-        YouTube(url).streams.first().download(app.config['UPLOAD_FOLDER'], filename=filename)
-    except:
+        YouTube(url) \
+            .streams \
+            .filter(subtype='mp4', progressive=True) \
+            .order_by('resolution') \
+            .first() \
+            .download(app.config['UPLOAD_FOLDER'], filename=filename)
+    except Exception as e:
+        print (e)
         return 'error: can\'t parse youtube url :('
     UPLOADED_VIDEOS[video_id] = filename
     return video_id
