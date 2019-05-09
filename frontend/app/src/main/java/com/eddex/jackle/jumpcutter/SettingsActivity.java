@@ -61,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         String path = extras.getString("videoUri");
         if (path == null) {
-            throw new NullPointerException("uir path was null???");
+            throw new NullPointerException("videoUri or path was null???");
         }
         Uri localUri = Uri.parse(path);
         server.uploadVideo(localUri);
