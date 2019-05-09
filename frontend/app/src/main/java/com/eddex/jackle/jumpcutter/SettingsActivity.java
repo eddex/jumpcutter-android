@@ -77,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         Uri localUri = Uri.parse(path);
         File videoCopy = getCopyFileFromUri(localUri);
-        server.uploadVideo(videoCopy);
+        AsyncTask.execute(() -> server.uploadVideo(videoCopy));
     }
 
         /**
@@ -89,7 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
         File videoCopy = getCopyFileFromUri(localPath);
-        server.uploadVideo(videoCopy);
+        AsyncTask.execute(() -> server.uploadVideo(videoCopy));
     }
 
     /**

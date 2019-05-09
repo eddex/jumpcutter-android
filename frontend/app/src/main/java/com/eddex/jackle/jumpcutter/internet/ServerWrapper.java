@@ -91,7 +91,7 @@ public class ServerWrapper {
 
         try {
             Response response = this.okHttpClient.newCall(request).execute();
-            Log.d("ServerWrapper", response.body().toString());
+            Log.d("ServerWrapper", response.body().string());
             return response.body().string();
         }
         catch (IOException e) {
