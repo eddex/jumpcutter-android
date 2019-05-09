@@ -14,7 +14,6 @@ import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,10 +76,10 @@ public class SettingsActivity extends AppCompatActivity {
         }
         Uri localUri = Uri.parse(path);
         File videoCopy = getCopyFileFromUri(localUri);
-        AsyncTask.execute(() -> server.uploadVideo(videoCopy));
+        AsyncTask.execute(() -> this.processId = server.uploadVideo(videoCopy));
     }
 
-        /**
+    /**
      * Uploads local video path to the server
      * Video was shared from local filesystem, per share button
      * @param intent
@@ -89,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
         File videoCopy = getCopyFileFromUri(localPath);
-        AsyncTask.execute(() -> server.uploadVideo(videoCopy));
+        AsyncTask.execute(() -> this.processId = server.uploadVideo(videoCopy));
     }
 
     /**
