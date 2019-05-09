@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.setType("video/from_main_activity");
-            intent.putExtra("videoUri", data.getData());
+            intent.putExtra("videoUri", data.getDataString());
             this.startActivity(intent);
         }
     }
