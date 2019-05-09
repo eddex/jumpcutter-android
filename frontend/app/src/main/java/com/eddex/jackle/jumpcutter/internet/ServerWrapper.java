@@ -64,7 +64,7 @@ public class ServerWrapper {
      * @param video: The video file on the local file system.
      * @return The video id. This id can be used for the processVideo() method.
      */
-    public String uploadVideo(String video) {
+    public String uploadVideo(File video) {
 
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
@@ -73,16 +73,15 @@ public class ServerWrapper {
                 .addPathSegment("upload")
                 .build();
 
-        File f = new File(video); // TODO: get file from video uri
-        Log.d("ServerWrapper", "uploadVideo(), file exists: " + f.exists());
+        Log.d("ServerWrapper", "uploadVideo(), file exists: " + video.exists());
         Log.d("ServerWrapper", "File: " + video);
 
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(
                         "file",
-                        f.getName(),
-                        RequestBody.create(MediaType.parse("video/"), f))
+                        video.getName(),
+                        RequestBody.create(MediaType.parse("video/"), video))
                 .build();
 
         Request request = new Request.Builder()

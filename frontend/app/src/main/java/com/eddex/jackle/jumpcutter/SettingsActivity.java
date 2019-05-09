@@ -13,6 +13,13 @@ import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class SettingsActivity extends AppCompatActivity {
 
     ServerWrapper server;
@@ -69,29 +76,11 @@ public class SettingsActivity extends AppCompatActivity {
             throw new NullPointerException("videoUri or path was null???");
         }
         Uri localUri = Uri.parse(path);
-        AsyncTask.execute(() -> {
-            String filePath = null;
-            Log.d("","URI = "+ localUri);
-            if (localUri != null && "content".equals(localUri.getScheme())) {
-                Cursor cursor = this.getContentResolver().query(
-                    localUri,
-                    new String[] { android.provider.MediaStore.Video.VideoColumns.DATA },
-                    null,
-                    null,
-                    null);
-                cursor.moveToFirst();
-                filePath = cursor.getString(0);
-                cursor.close();
-            } else {
-                filePath = localUri.getPath();
-            }
-            Log.d("","Chosen path = "+ filePath);
-            String id = server.uploadVideo(filePath);
-            runOnUiThread(() -> processId = id);
-        });
+        File videoCopy = getCopyFileFromUri(localUri);
+        server.uploadVideo(videoCopy);
     }
 
-    /**
+        /**
      * Uploads local video path to the server
      * Video was shared from local filesystem, per share button
      * @param intent
@@ -99,7 +88,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void uploadSharedLocalVideo(Intent intent) {
         ClipData.Item item = intent.getClipData().getItemAt(0);
         Uri localPath = item.getUri();
-        AsyncTask.execute(() -> server.uploadVideo(localPath.toString()));
+        File videoCopy = getCopyFileFromUri(localPath);
+        server.uploadVideo(videoCopy);
     }
 
     /**
@@ -115,6 +105,34 @@ public class SettingsActivity extends AppCompatActivity {
             AsyncTask.execute(() -> this.processId = server.downloadYouTubeVideo(youtubeUrl));
         } else {
             throw new IllegalArgumentException("not a youtube link");
+        }
+    }
+
+    private File getCopyFileFromUri(Uri localUri)
+    {
+        File copy = new File( getFilesDir(),"copy.mp4");
+
+        //Copy URI contents into temporary file.
+        try {
+            copy.delete();
+            copy.createNewFile();
+            InputStream in = getContentResolver().openInputStream(localUri);
+
+            // copy data from uri source to temp file
+            OutputStream out = new FileOutputStream(copy);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.close();
+            in.close();
+
+            return copy;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
