@@ -15,11 +15,11 @@ public class SettingsProvider {
         return this.preferences.getString("list_preference_sound_speed", null);
     }
 
-    public String geSilenceSpeed() {
+    public String getSilenceSpeed() {
         return this.preferences.getString("list_preference_silence_speed", null);
     }
 
-    public String geSilenceThreshold() {
+    public String getSilenceThreshold() {
         return this.preferences.getString("list_preference_silence_threshold", null);
     }
 
