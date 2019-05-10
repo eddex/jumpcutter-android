@@ -6,8 +6,6 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -24,9 +22,9 @@ public class ServerWrapper {
     public boolean HasError = false;
 
     private final OkHttpClient okHttpClient;
-    private final String Scheme = "http";
-    private final String Host = "jumpcutter.letum.ch"; // on emulator localhost = 10.0.2.2
-    private final int Port = 80;
+    private final String Scheme = "https";
+    private final String Host = "jumpcutter.letum.ch"; // on emulator localhost = 10.0.2.2, "192.168.1.160"
+    //private final int Port = 8080;
 
     @Inject
     public ServerWrapper(OkHttpClient okHttpClient) {
@@ -133,6 +131,7 @@ public class ServerWrapper {
 
         ProcessUrlBuilder urlBuilder = new ProcessUrlBuilder()
                 .withHost(this.Host)
+                //.withScheme("http")
                 //.withPort(this.Port)
                 .withVideoId(videoId)
                 .withSoundedSpeed(settingsProvider.getSoundSpeed())

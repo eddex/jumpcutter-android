@@ -1,13 +1,16 @@
 package com.eddex.jackle.jumpcutter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
@@ -64,48 +67,39 @@ public class ProcessingActivity extends AppCompatActivity {
         ProgressBar processingProgressBar = this.findViewById(R.id.progressBar_processing);
         ProgressBar downloadProgressBar = this.findViewById(R.id.progressBar_download);
         Button showMyVideosButton = this.findViewById(R.id.buttonShowMyVideos);
+        Context context = getApplicationContext();
 
         AsyncTask.execute(() -> {
-            AsyncTask.execute(() -> fakeAwesomeProgressBarUpdate(3000, uploadProgressBar));
+            uploadProgressBar.setProgress(33);
             String processId = this.server.uploadVideo(videoCopy);
+            uploadProgressBar.setProgress(66);
+            runOnUiThread(() -> Toast.makeText(context, "video uploaded", Toast.LENGTH_SHORT).show());
+            uploadProgressBar.setProgress(100);
 
             if (this.server.HasError) {
+                Log.e("ProcessingActivity", "Server error during upload.");
                 return;
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-            AsyncTask.execute(() -> fakeAwesomeProgressBarUpdate(40000, processingProgressBar));
-            String downloadId = this.server.processVideo(processId, new SettingsProvider(this.getApplicationContext()));
+            processingProgressBar.setProgress(33);
+            String downloadId = this.server.processVideo(processId, new SettingsProvider(context));
+            processingProgressBar.setProgress(66);
+            runOnUiThread(() -> Toast.makeText(context, "video processed", Toast.LENGTH_SHORT).show());
+            processingProgressBar.setProgress(100);
 
             if (this.server.HasError) {
+                Log.e("ProcessingActivity", "Server error during processing.");
                 return;
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-            AsyncTask.execute(() -> fakeAwesomeProgressBarUpdate(4000, downloadProgressBar));
+            downloadProgressBar.setProgress(33);
             this.server.downloadVideo(downloadId);
+            downloadProgressBar.setProgress(66);
+            runOnUiThread(() -> Toast.makeText(context, "video downloaded", Toast.LENGTH_SHORT).show());
+            downloadProgressBar.setProgress(100);
 
             runOnUiThread(() -> showMyVideosButton.setEnabled(true));
         });
-    }
-
-    private void fakeAwesomeProgressBarUpdate(int timeToEnd, ProgressBar progressBar) {
-
-        long time = new Date().getTime();
-        int delta = 0;
-        while (delta < timeToEnd) {
-
-            delta = (int)(new Date().getTime() - time);
-            progressBar.setProgress(delta / timeToEnd / 100);
-        }
     }
 
     private void processYouTubeVideo(Intent intent) {
