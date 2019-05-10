@@ -7,48 +7,60 @@
             android:entryValues="@array/sound_speed"
             android:key="list_preference_sound_speed"
             android:title="Sound Speed"
-            android:summary="Selected sound speed: %s" />
+            android:summary="The speed that sounded (spoken) frames should be played at. 1 means normal speed.\nSelected speed: %s" />
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="5"
             android:entries="@array/silence_speed"
             android:entryValues="@array/silence_speed"
             android:key="list_preference_silence_speed"
             android:title="Silence Speed"
-            android:summary="Selected silence speed: %s" />
+            android:summary="The speed that silent frames should be played at. 999999 for jumpcutting.\nSelected speed: %s" />
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="0.1"
             android:entries="@array/silence_threshold"
             android:entryValues="@array/silence_threshold"
             android:key="list_preference_silence_threshold"
             android:title="Silence Threshold"
-            android:summary="Selected silence threshold: %s" />
+            android:summary="The volume amount that frames' audio needs to surpass to be considered 'sound'. It ranges from 0 (silence) to 1 (max volume).\nSelected threshold: %s" />
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/frame_margin"
             android:entryValues="@array/frame_margin"
             android:key="list_preference_frame_margin"
             android:title="Frame Margin"
-            android:summary="Selected frame margin: %s" />
+            android:summary="Some silent frames adjacent to sounded frames are included to provide context. How many frames on either the side of speech should be included? That's this variable.\nSelected frame margin: %s" />
     </PreferenceCategory>
 
     <SwitchPreference
         android:defaultValue="false"
         android:key="advanced_options_switch"
-        android:title="Enable advanced options" />
+        android:title="Enable advanced options"
+        android:summary="Only enable advanced options if you have problems with the default options!"/>
 
     <PreferenceCategory
         android:title="Advanced Options"
         android:dependency="advanced_options_switch">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="ADVANCED CHECKBOX"
-            android:title="ADVANCED CHECKBOX" />
         <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/sound_speed"
-            android:entryValues="@array/sound_speed"
-            android:key="TODO"
-            android:title="TODO"
-            android:summary="TODO: %s" />
+            android:defaultValue="44100"
+            android:entries="@array/sample_rate"
+            android:entryValues="@array/sample_rate"
+            android:key="list_preference_sample_rate"
+            android:title="Sample Rate"
+            android:summary="Sample rate of the input and output videos.\nSelected sample rate: %s" />
+        <ListPreference
+            android:defaultValue="30"
+            android:entries="@array/frame_rate"
+            android:entryValues="@array/frame_rate"
+            android:key="list_preference_frame_rate"
+            android:title="Frame Rate"
+            android:summary="Frame rate of the input and output videos.\Selected frame rate: %s"
+            android:inputType="number" />
+        <ListPreference
+            android:defaultValue="3"
+            android:entries="@array/frame_quality"
+            android:entryValues="@array/frame_quality"
+            android:key="list_preference_frame_quality"
+            android:title="Sample Rate"
+            android:summary="Quality of frames to be extracted from input video. 1 is highest, 31 is lowest, 3 is the default.\nSelected frame quality: %s" />
     </PreferenceCategory>
 </PreferenceScreen>
