@@ -5,22 +5,25 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
+import com.eddex.jackle.jumpcutter.internet.SettingsProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 public class ProcessingActivity extends AppCompatActivity {
 
     ServerWrapper server;
-    String processId;
-    String downloadId;
 
     public ProcessingActivity() {
 
@@ -56,7 +59,53 @@ public class ProcessingActivity extends AppCompatActivity {
         }
         Uri localUri = Uri.parse(path);
         File videoCopy = getCopyFileFromUri(localUri);
-        AsyncTask.execute(() -> this.processId = this.server.uploadVideo(videoCopy));
+
+        ProgressBar uploadProgressBar = this.findViewById(R.id.progressBar_upload);
+        ProgressBar processingProgressBar = this.findViewById(R.id.progressBar_processing);
+        ProgressBar downloadProgressBar = this.findViewById(R.id.progressBar_download);
+        Button showMyVideosButton = this.findViewById(R.id.buttonShowMyVideos);
+
+        AsyncTask.execute(() -> {
+            AsyncTask.execute(() -> fakeAwesomeProgressBarUpdate(3000, uploadProgressBar));
+            String processId = this.server.uploadVideo(videoCopy);
+
+            if (this.server.HasError) {
+                return;
+            }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            AsyncTask.execute(() -> fakeAwesomeProgressBarUpdate(40000, processingProgressBar));
+            String downloadId = this.server.processVideo(processId, new SettingsProvider(this.getApplicationContext()));
+
+            if (this.server.HasError) {
+                return;
+            }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            AsyncTask.execute(() -> fakeAwesomeProgressBarUpdate(4000, downloadProgressBar));
+            this.server.downloadVideo(downloadId);
+
+            runOnUiThread(() -> showMyVideosButton.setEnabled(true));
+        });
+    }
+
+    private void fakeAwesomeProgressBarUpdate(int timeToEnd, ProgressBar progressBar) {
+
+        long time = new Date().getTime();
+        int delta = 0;
+        while (delta < timeToEnd) {
+
+            delta = (int)(new Date().getTime() - time);
+            progressBar.setProgress(delta / 30);
+        }
     }
 
     private void processYouTubeVideo(Intent intent) {
@@ -65,7 +114,7 @@ public class ProcessingActivity extends AppCompatActivity {
         String youTubeLink = extras.getString("youTubeLink");
 
         if (youTubeLink.contains("https://youtu.be/")) {
-            AsyncTask.execute(() -> this.processId = this.server.downloadYouTubeVideo(youTubeLink));
+            AsyncTask.execute(() -> this.server.downloadYouTubeVideo(youTubeLink));
         } else {
             throw new IllegalArgumentException("not a youtube link");
         }
@@ -97,5 +146,10 @@ public class ProcessingActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void showProcessedVideos(View view) {
+        Intent myVideosIntent = new Intent(this, MyVideosActivity.class);
+        this.startActivity(myVideosIntent);
     }
 }

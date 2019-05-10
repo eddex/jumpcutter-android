@@ -21,6 +21,8 @@ import okhttp3.Response;
 
 public class ServerWrapper {
 
+    public boolean HasError = false;
+
     private final OkHttpClient okHttpClient;
     private final String Scheme = "http";
     private final String Host = "jumpcutter.letum.ch"; // on emulator localhost = 10.0.2.2
@@ -56,9 +58,11 @@ public class ServerWrapper {
             return response.isSuccessful();
         }
         catch (IOException e) {
+            this.HasError = true;
             return false;
         }
         catch (IllegalStateException e) {
+            this.HasError = true;
             return false;
         }
     }
@@ -171,11 +175,9 @@ public class ServerWrapper {
                 .get()
                 .build();
 
-        Response response = null;
-
         try {
             // get video
-            response = this.okHttpClient.newCall(request).execute();
+            Response response = this.okHttpClient.newCall(request).execute();
             byte[] video = response.body().bytes();
 
             // create file
@@ -190,9 +192,6 @@ public class ServerWrapper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        // TODO: save video to directory used by MyVideosActivity
     }
 
     private String getStringResponseFromServer(Request request) {
@@ -203,9 +202,11 @@ public class ServerWrapper {
             return responseValue;
         }
         catch (IOException e) {
+            this.HasError = true;
             return null;
         }
         catch (IllegalStateException e) {
+            this.HasError = true;
             return null;
         }
     }

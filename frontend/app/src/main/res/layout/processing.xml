@@ -74,13 +74,14 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonShowMyVideos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/show_processed_videos"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         tools:layout_editor_absoluteX="10dp"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:onClick="showProcessedVideos"/>
 
 </android.support.constraint.ConstraintLayout>
