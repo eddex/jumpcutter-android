@@ -104,7 +104,7 @@ public class ProcessingActivity extends AppCompatActivity {
         while (delta < timeToEnd) {
 
             delta = (int)(new Date().getTime() - time);
-            progressBar.setProgress(delta / 30);
+            progressBar.setProgress(delta / timeToEnd / 100);
         }
     }
 
