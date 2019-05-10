@@ -89,17 +89,7 @@ public class ServerWrapper {
                 .post(requestBody)
                 .build();
 
-        try {
-            Response response = this.okHttpClient.newCall(request).execute();
-            Log.d("ServerWrapper", response.body().string());
-            return response.body().string();
-        }
-        catch (IOException e) {
-            return null;
-        }
-        catch (IllegalStateException e) {
-            return null;
-        }
+        return this.getStringResponseFromServer(request);
     }
 
     /**
@@ -122,19 +112,7 @@ public class ServerWrapper {
                 .get()
                 .build();
 
-        try {
-            Response response = this.okHttpClient.newCall(request).execute();
-            Log.d("ServerWrapper", response.body().toString());
-            String processId = response.body().string();
-            Log.d("ServerWrapper", processId);
-            return processId;
-        }
-        catch (IOException e) {
-            return null;
-        }
-        catch (IllegalStateException e) {
-            return null;
-        }
+        return getStringResponseFromServer(request);
     }
 
     /**
@@ -145,27 +123,36 @@ public class ServerWrapper {
      */
     public String processVideo(String videoId) {
 
-        HttpUrl url = new ProcessUrlBuilder()
+        ProcessUrlBuilder urlBuilder = new ProcessUrlBuilder()
                 .withHost(this.Host)
-                .withPort(this.Port)
+                //.withPort(this.Port)
                 .withSoundedSpeed("1.2")
                 .withSilentSpeed("99")
-                .build();
+                .withSilentThreshold("0.2")
+                .withFrameMargin("1");
 
+        // TODO: if settingsProvider.advancedOptionsActive == true: add advanced options
+        if (false) {
+            urlBuilder
+                .withSampleRate("44100")
+                .withFrameRate("30")
+                .withFrameQuality("3");
+        }
+
+        HttpUrl url = urlBuilder.build();
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .build();
 
-        return null; // TODO: return download id returned by the request
+        return this.getStringResponseFromServer(request);
     }
 
     /**
      * Download a processed video.
      * @param downloadId: The download id returned by the processVideo() method.
-     * @return The local path to the downloaded video.
      */
-    public String downloadVideo(String downloadId) {
+    public void downloadVideo(String downloadId) {
 
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
@@ -180,6 +167,21 @@ public class ServerWrapper {
                 .get()
                 .build();
 
-        return null; // TODO: return video location on phone
+        // TODO: save video to directory used by MyVideosActivity
+    }
+
+    private String getStringResponseFromServer(Request request) {
+        try {
+            Response response = this.okHttpClient.newCall(request).execute();
+            String responseValue = response.body().string();
+            Log.d("ServerWrapper", responseValue);
+            return responseValue;
+        }
+        catch (IOException e) {
+            return null;
+        }
+        catch (IllegalStateException e) {
+            return null;
+        }
     }
 }
