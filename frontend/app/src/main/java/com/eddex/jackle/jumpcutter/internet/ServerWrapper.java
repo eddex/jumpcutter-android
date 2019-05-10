@@ -126,6 +126,7 @@ public class ServerWrapper {
         ProcessUrlBuilder urlBuilder = new ProcessUrlBuilder()
                 .withHost(this.Host)
                 //.withPort(this.Port)
+                .withVideoId(videoId)
                 .withSoundedSpeed(settingsProvider.getSoundSpeed())
                 .withSilentSpeed(settingsProvider.getSilenceSpeed())
                 .withSilentThreshold(settingsProvider.getSilenceThreshold())
