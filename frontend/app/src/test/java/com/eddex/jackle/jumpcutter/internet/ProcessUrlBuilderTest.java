@@ -180,11 +180,10 @@ public class ProcessUrlBuilderTest {
                 .withSampleRate("6")
                 .withFrameRate("7")
                 .withFrameQuality("8")
-                .withFrameQuality("9")
                 .build();
 
         Assert.assertEquals(
-            "https://test.tt:8080/process?video_id=1&silent_threshold=2&sounded_speed=3&silent_speed=4&frame_margin=5&sample_rate=6&frame_rate=7&frame_quality=9",
+            "https://test.tt:8080/process?video_id=1&silent_threshold=2&sounded_speed=3&silent_speed=4&frame_margin=5&sample_rate=6&frame_rate=7&frame_quality=8",
             url.toString());
     }
 }
