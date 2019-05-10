@@ -2,12 +2,11 @@ package com.eddex.jackle.jumpcutter;
 
 import android.content.ClipData;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
 
 import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
@@ -35,17 +34,17 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, new SettingsActivityInitializer())
+        setContentView(R.layout.settingsview);
+        // replaces the FrameLayout from SettingsView with the actual preferences(fragment)
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.preferences_content, new SettingsFragment())
                 .commit();
-        handleActivityCall();
     }
 
     /**
      * Handles the different ways to share videos or video paths to this app
      */
-    private void handleActivityCall() {
+    public void handleActivityCall(View view) {
         Intent intent = getIntent();
         String type = intent.getType();
 
