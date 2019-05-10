@@ -11,9 +11,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.settingsview);
+
         // replaces the FrameLayout from SettingsView with the actual preferences(fragment)
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.preferences_content, new SettingsFragment())
@@ -86,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void processLocalVideo(Uri localUri, Intent processIntent) {
 
         processIntent.setType("video/local");
-        processIntent.putExtra("videoUri", localUri);
+        processIntent.putExtra("videoUri", localUri.toString());
         this.startActivity(processIntent);
     }
 
