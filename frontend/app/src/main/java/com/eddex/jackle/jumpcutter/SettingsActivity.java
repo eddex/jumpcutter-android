@@ -3,32 +3,11 @@ package com.eddex.jackle.jumpcutter;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
-import com.eddex.jackle.jumpcutter.injection.ServerComponent;
-import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 public class SettingsActivity extends AppCompatActivity {
-
-    ServerWrapper server;
-    String processId;
-    String downloadId;
-
-    public SettingsActivity() {
-
-        ServerComponent component = DaggerServerComponent.create();
-        this.server = component.provideServerWrapper();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,95 +21,83 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles the different ways to share videos or video paths to this app
+     * Handles the different ways to share videos or YouTube links with this app.
      */
-    public void handleActivityCall(View view) {
-        Intent intent = getIntent();
-        String type = intent.getType();
+    public void startButtonClicked(View view) {
+        Intent sourceIntent = getIntent();
+        String type = sourceIntent.getType();
 
-        //sent from main activity
+        Intent processIntent = new Intent(this, ProcessingActivity.class);
+
         if (type.startsWith("video/from_main_activity")) {
-            this.uploadSelectedLocalVideo(intent);
+            handleFilePickerLocalVideo(sourceIntent, processIntent);
         }
-        // video from filesystem sent per Share Button
         else if (type.startsWith("video/")) {
-            this.uploadSharedLocalVideo(intent);
+            handleSharedLocalVideo(sourceIntent, processIntent);
         }
-        // youtube link share per share button (in youtube app)
         else if (type.startsWith("text/")) {
-            this.uploadSharedYoutubeVideo(intent);
+            handleSharedYouTubeLink(sourceIntent, processIntent);
         }
     }
 
     /**
-     * Uploads local video path to the server
-     * Video was selected from the jumpcutter main activity
-     * @param intent
+     * Handles the case where a local file has been chosen with the file picker.
+     * @param sourceIntent: The received intent.
+     * @param processIntent: The intent to open the processing activity.
      */
-    private void uploadSelectedLocalVideo(Intent intent) {
-        Bundle extras = intent.getExtras();
+    private void handleFilePickerLocalVideo(Intent sourceIntent, Intent processIntent) {
+
+        Bundle extras = sourceIntent.getExtras();
         String path = extras.getString("videoUri");
         if (path == null) {
             throw new NullPointerException("videoUri or path was null???");
         }
         Uri localUri = Uri.parse(path);
-        File videoCopy = getCopyFileFromUri(localUri);
-        AsyncTask.execute(() -> this.processId = server.uploadVideo(videoCopy));
+        this.processLocalVideo(localUri, processIntent);
     }
 
     /**
-     * Uploads local video path to the server
-     * Video was shared from local filesystem, per share button
-     * @param intent
+     * Handles the case where a local file has been shared with this app.
+     * @param sourceIntent: The received intent.
+     * @param processIntent: The intent to open the processing activity.
      */
-    private void uploadSharedLocalVideo(Intent intent) {
-        ClipData.Item item = intent.getClipData().getItemAt(0);
-        Uri localPath = item.getUri();
-        File videoCopy = getCopyFileFromUri(localPath);
-        AsyncTask.execute(() -> this.processId = server.uploadVideo(videoCopy));
+    private void handleSharedLocalVideo(Intent sourceIntent, Intent processIntent) {
+        ClipData.Item item = sourceIntent.getClipData().getItemAt(0);
+        Uri localUri = item.getUri();
+        this.processLocalVideo(localUri, processIntent);
     }
 
     /**
-     * Uploads a youtube video to the server
-     * Youtube link shared per youtube app
-     * @param intent
+     * Handles the case where a YouTube video has been shared with this app.
+     * @param sourceIntent: The received intent.
+     * @param processIntent: The intent to open the processing activity.
      */
-    private void uploadSharedYoutubeVideo(Intent intent) {
-        Bundle extras = intent.getExtras();
-        String youtubeUrl = extras.getString(Intent.EXTRA_TEXT);
-
-        if (youtubeUrl.contains("https://youtu.be/")) {
-            AsyncTask.execute(() -> this.processId = server.downloadYouTubeVideo(youtubeUrl));
-        } else {
-            throw new IllegalArgumentException("not a youtube link");
-        }
+    private void handleSharedYouTubeLink(Intent sourceIntent, Intent processIntent) {
+        Bundle extras = sourceIntent.getExtras();
+        String youTubeLink = extras.getString(Intent.EXTRA_TEXT);
+        this.processYouTubeVideo(youTubeLink, processIntent);
     }
 
-    private File getCopyFileFromUri(Uri localUri)
-    {
-        File copy = new File( getFilesDir(),"copy.mp4");
+    /**
+     * Open ProcessingActivity and start processing a video from the local file system.
+     * @param localUri: The path to where the file can be found (as content:// URI)
+     * @param processIntent: The intent to open the processing activity.
+     */
+    private void processLocalVideo(Uri localUri, Intent processIntent) {
 
-        //Copy URI contents into temporary file.
-        try {
-            copy.delete();
-            copy.createNewFile();
-            InputStream in = getContentResolver().openInputStream(localUri);
+        processIntent.setType("video/local");
+        processIntent.putExtra("videoUri", localUri);
+        this.startActivity(processIntent);
+    }
 
-            // copy data from uri source to temp file
-            OutputStream out = new FileOutputStream(copy);
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            out.close();
-            in.close();
+    /**
+     * Open ProcessingActivity and start processing a YouTube video.
+     * @param processIntent: The intent to open the processing activity.
+     */
+    private void processYouTubeVideo(String youTubeLink, Intent processIntent) {
 
-            return copy;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        processIntent.setType("video/youtube");
+        processIntent.putExtra("youTubeLink", youTubeLink);
+        this.startActivity(processIntent);
     }
 }

@@ -15,7 +15,7 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Conversion"
-        android:onClick="handleActivityCall"
+        android:text="@string/start_conversion"
+        android:onClick="startButtonClicked"
         />
 </LinearLayout>

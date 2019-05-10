@@ -15,4 +15,5 @@
     <string name="label_processing_progress">Processing</string>
     <string name="label_download_progress">Download</string>
     <string name="show_processed_videos">Show processed videos</string>
+    <string name="start_conversion">Start Conversion</string>
 </resources>
