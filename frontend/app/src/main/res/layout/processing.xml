@@ -33,9 +33,10 @@
 
         <ProgressBar
             android:id="@+id/progressBar_upload"
-            style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:progress="0" />
 
         <TextView
             android:id="@+id/textViewProcessing"
@@ -47,9 +48,10 @@
 
         <ProgressBar
             android:id="@+id/progressBar_processing"
-            style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:progress="0" />
 
         <TextView
             android:id="@+id/textViewDownload"
@@ -61,9 +63,10 @@
 
         <ProgressBar
             android:id="@+id/progressBar_download"
-            style="?android:attr/progressBarStyle"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:progress="0" />
 
     </LinearLayout>
 
