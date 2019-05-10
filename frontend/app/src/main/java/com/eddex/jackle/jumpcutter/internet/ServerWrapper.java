@@ -1,9 +1,13 @@
 package com.eddex.jackle.jumpcutter.internet;
 
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -166,6 +170,27 @@ public class ServerWrapper {
                 .url(url)
                 .get()
                 .build();
+
+        Response response = null;
+
+        try {
+            // get video
+            response = this.okHttpClient.newCall(request).execute();
+            byte[] video = response.body().bytes();
+
+            // create file
+            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "jumpcutter");
+            File videoFile = new File(dir, String.format("jumpcutter_video_{0}", new Timestamp(new Date().getTime()).toString()));
+
+            // write content to file
+            FileOutputStream fileStream = new FileOutputStream(videoFile);
+            fileStream.write(video);
+            fileStream.flush();
+            fileStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // TODO: save video to directory used by MyVideosActivity
     }
