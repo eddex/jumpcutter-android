@@ -182,7 +182,7 @@ public class ServerWrapper {
 
             // create file
             File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "jumpcutter");
-            File videoFile = new File(dir, String.format("jumpcutter_video_{0}", new Timestamp(new Date().getTime()).toString()));
+            File videoFile = new File(dir, String.format("jumpcutter_video_%s", downloadId));
 
             // write content to file
             FileOutputStream fileStream = new FileOutputStream(videoFile);
