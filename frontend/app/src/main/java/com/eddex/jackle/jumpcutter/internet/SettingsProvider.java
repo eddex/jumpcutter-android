@@ -23,6 +23,10 @@ public class SettingsProvider {
         return this.preferences.getString("list_preference_silence_threshold", null);
     }
 
+    public String getFrameMargin() {
+        return this.preferences.getString("list_preference_frame_margin", null);
+    }
+
     public Boolean getAdvancedOptionsSwitchEnabled() {
         return this.preferences.getBoolean("advanced_options_switch", false);
     }

@@ -121,22 +121,21 @@ public class ServerWrapper {
      *               (This id is returned by the uploadVideo() or the downloadYouTubeVideo() method)
      * @return The download id of the processed video. Not equal to the video id!
      */
-    public String processVideo(String videoId) {
+    public String processVideo(String videoId, SettingsProvider settingsProvider) {
 
         ProcessUrlBuilder urlBuilder = new ProcessUrlBuilder()
                 .withHost(this.Host)
                 //.withPort(this.Port)
-                .withSoundedSpeed("1.2")
-                .withSilentSpeed("99")
-                .withSilentThreshold("0.2")
-                .withFrameMargin("1");
+                .withSoundedSpeed(settingsProvider.getSoundSpeed())
+                .withSilentSpeed(settingsProvider.getSilenceSpeed())
+                .withSilentThreshold(settingsProvider.getSilenceThreshold())
+                .withFrameMargin(settingsProvider.getFrameMargin());
 
-        // TODO: if settingsProvider.advancedOptionsActive == true: add advanced options
-        if (false) {
+        if (settingsProvider.getAdvancedOptionsSwitchEnabled()) {
             urlBuilder
-                .withSampleRate("44100")
-                .withFrameRate("30")
-                .withFrameQuality("3");
+                .withSampleRate(settingsProvider.getSampleRate())
+                .withFrameRate(settingsProvider.getFrameRate())
+                .withFrameQuality(settingsProvider.getFrameQuality());
         }
 
         HttpUrl url = urlBuilder.build();
