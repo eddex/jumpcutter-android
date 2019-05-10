@@ -10,4 +10,9 @@
     <string name="about_dev1">Dev 1: Palkoska Marco</string>
     <string name="about_dev2">Dev 2: Luthiger Yannick</string>
     <string name="copyright_notice">© 2019 Palkoska Marco, Luthiger Yannick All Rights Reserved</string>
+    <string name="label_upload_progress">Upload</string>
+    <string name="label_processing">Processing Video</string>
+    <string name="label_processing_progress">Processing</string>
+    <string name="label_download_progress">Download</string>
+    <string name="show_processed_videos">Show processed videos</string>
 </resources>
