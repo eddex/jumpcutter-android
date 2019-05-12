@@ -28,10 +28,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
     }
 
     /**
-     * Inflates the row layout we created
-     * @param parent
-     * @param viewType
-     * @return
+     * Inflates the row layout.
      */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,9 +38,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
 
 
     /**
-     * Binds the data to each row
-     * @param holder
-     * @param position
+     * Binds the data to each row.
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -55,8 +50,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
     }
 
     /**
-     * Item count used by another method
-     * @return
+     * Item count used by another method.
      */
     @Override
     public int getItemCount() {
@@ -121,15 +115,14 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
     }
 
     /**
-     * allows clicks events to be caught
-     * @param itemClickListener
+     * Allows clicks events to be caught.
      */
     public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 
     /**
-     * parent activity will implement this method to respond to click events
+     * Parent activity will implement this method to respond to click events.
      */
     public interface ItemClickListener {
         void onItemClick(View view, int position);
