@@ -32,7 +32,7 @@ public class FileSystemWrapper {
         File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "jumpcutter");
 
         String timestamp = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss", Locale.US).format(new Date());
-        File videoFile = new File(dir, String.format("jumpcutter_video_%s", timestamp));
+        File videoFile = new File(dir, String.format("jumpcutter_video_%s.mp4", timestamp));
 
         // write content to file
         FileOutputStream fileStream = new FileOutputStream(videoFile);
