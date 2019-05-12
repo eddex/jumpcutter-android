@@ -19,15 +19,15 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRecyclerViewAdapter.ViewHolder> {
-    private ArrayList<File> mData;
-    private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
+    private ArrayList<File> data;
+    private LayoutInflater inflater;
+    private ItemClickListener clickListener;
 
     // data is passed into the constructor
     public MyVideosRecyclerViewAdapter(Context context, ArrayList<File> data) {
-        this.mInflater = LayoutInflater.from(context);
+        this.inflater = LayoutInflater.from(context);
         Collections.sort(data, new FileComparator());
-        this.mData = data;
+        this.data = data;
     }
 
     private class FileComparator implements Comparator<File> {
@@ -42,7 +42,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.recyclerview_row, parent, false);
+        View view = inflater.inflate(R.layout.recyclerview_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -52,7 +52,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        File video = this.mData.get(position);
+        File video = this.data.get(position);
         holder.myTextView.setText(video.getName());
 
         Bitmap bmThumbnail = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
@@ -64,7 +64,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public int getItemCount() {
-        return (this.mData == null) ?  0 : this.mData.size();
+        return (this.data == null) ?  0 : this.data.size();
     }
 
     // stores and recycles views as they are scrolled off screen
@@ -84,19 +84,19 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
 
             deleteButton.setOnClickListener(v -> {
                 int index = getAdapterPosition();
-                File toDelete = mData.get(index);
+                File toDelete = data.get(index);
                 showDeleteDialog(toDelete, index);
             });
         }
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            if (clickListener != null) clickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
     private void showDeleteDialog(File video, int index) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mInflater.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext());
 
         builder.setTitle("Confirm")
                 .setMessage("Are you sure?")
@@ -112,21 +112,21 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
 
     private void deleteVideo(File toDelete, int index) {
         if (toDelete.delete()) {
-            this.mData.remove(toDelete);
-            notifyItemRangeChanged(index, this.mData.size()-index+1);
+            this.data.remove(toDelete);
+            notifyItemRangeChanged(index, this.data.size()-index+1);
         }
     }
 
     // convenience method for getting data at click position
     File getItem(int id) {
-        return this.mData.get(id);
+        return this.data.get(id);
     }
 
     /**
      * Allows clicks events to be caught.
      */
     public void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
+        this.clickListener = itemClickListener;
     }
 
     /**
