@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyclerViewAdapter.ItemClickListener{
 
@@ -54,9 +55,7 @@ public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyc
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "jumpcutter");
         dir.mkdir();
-        File[] animalNames = dir.listFiles();
-
-        adapter = new MyVideosRecyclerViewAdapter(this, animalNames);
+        adapter = new MyVideosRecyclerViewAdapter(this, new ArrayList<File>(Arrays.asList(dir.listFiles())));
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
     }
