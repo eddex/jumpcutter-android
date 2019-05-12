@@ -85,7 +85,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
             deleteButton.setOnClickListener(v -> {
                 int index = getAdapterPosition();
                 File toDelete = mData.get(index);
-                ShowDeleteDialog(toDelete, index);
+                showDeleteDialog(toDelete, index);
             });
         }
 
@@ -95,14 +95,13 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
         }
     }
 
-    private void ShowDeleteDialog(File video, int index)
-    {
+    private void showDeleteDialog(File video, int index) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mInflater.getContext());
 
         builder.setTitle("Confirm")
                 .setMessage("Are you sure?")
                 .setPositiveButton("YES", (dialog, which) -> {
-                    DeleteVideo(video, index);
+                    deleteVideo(video, index);
                     dialog.dismiss();
                 })
                 .setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
@@ -111,8 +110,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
         alert.show();
     }
 
-    private void DeleteVideo(File toDelete, int index)
-    {
+    private void deleteVideo(File toDelete, int index) {
         if (toDelete.delete()) {
             this.mData.remove(toDelete);
             notifyItemRangeChanged(index, this.mData.size()-index+1);
