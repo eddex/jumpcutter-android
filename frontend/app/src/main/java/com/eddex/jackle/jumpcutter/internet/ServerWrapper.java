@@ -24,9 +24,9 @@ public class ServerWrapper {
 
     private final OkHttpClient okHttpClient;
     private final FileSystemWrapper filesystemWrapper;
-    private final String Scheme = "http";
-    private final String Host = "192.168.1.160"; // on emulator localhost = 10.0.2.2
-    private final int Port = 8080;
+    private final String Scheme = "https";
+    private final String Host = "jumpcutter.letum.ch"; // on emulator localhost = 10.0.2.2
+    //private final int Port = 8080;
 
     @Inject
     public ServerWrapper(OkHttpClient okHttpClient, FileSystemWrapper filesystemWrapper) {
@@ -43,7 +43,7 @@ public class ServerWrapper {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
-                .port(this.Port)
+                //.port(this.Port)
                 .build();
 
         System.out.println("ServerWrapper: ping() " + url);
@@ -78,7 +78,7 @@ public class ServerWrapper {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
-                .port(this.Port)
+                //.port(this.Port)
                 .addPathSegment("upload")
                 .build();
 
@@ -111,7 +111,7 @@ public class ServerWrapper {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
-                .port(this.Port)
+                //.port(this.Port)
                 .addPathSegment("youtube")
                 .addQueryParameter("url", youtubeUrl)
                 .build();
@@ -134,8 +134,8 @@ public class ServerWrapper {
 
         ProcessUrlBuilder urlBuilder = new ProcessUrlBuilder()
                 .withHost(this.Host)
-                .withScheme("http")
-                .withPort(this.Port)
+                .withScheme(this.Scheme)
+                //.withPort(this.Port)
                 .withVideoId(videoId)
                 .withSoundedSpeed(settingsProvider.getSoundSpeed())
                 .withSilentSpeed(settingsProvider.getSilenceSpeed())
@@ -169,7 +169,7 @@ public class ServerWrapper {
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
                 .host(this.Host)
-                .port(this.Port)
+                //.port(this.Port)
                 .addPathSegment("download")
                 .addQueryParameter("download_id", downloadId)
                 .build();
