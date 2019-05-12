@@ -11,7 +11,7 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="50dp" />
+        android:minHeight="80dp" />
 
     <TextView
         android:id="@+id/editText"
@@ -41,30 +41,7 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="40dp" />
-
-    <TextView
-        android:id="@+id/editText2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/or_use_a_youtube_url"
-        android:textSize="28sp"
-        android:textAlignment="center" />
-
-    <EditText
-        android:id="@+id/youtubeurlTextBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:inputType="textWebEditText"
-        android:hint="@string/hint_paste_youtube_url_here"
-        android:textAlignment="center"/>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="@string/uploadyoutubeurl" />
-
+        android:minHeight="40dp"
+        android:layout_weight="0.3"
+        />
 </LinearLayout>
