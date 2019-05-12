@@ -4,6 +4,7 @@ import subprocess
 from flask import Flask, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 from pytube import YouTube
+from shutil import rmtree
 
 UPLOAD_FOLDER = '/tmp/upload'
 ALLOWED_EXTENSIONS = set(['mp4', 'wmv', 'avi'])
@@ -23,6 +24,29 @@ def allowed_file(filename):
 def hello():
     return '<p>Hello!</p><p>Uploaded videos: {}</p><p>Converted videos: {}</p>'.format(len(CONVERTED_VIDEOS), len(UPLOADED_VIDEOS))
 
+@app.route("/clean")
+def clean_all_files():
+    '''
+        needed because jumpcutter library sometimes fails and doesn't delete the 'TEMP' folder.
+        if this happens all subsequent requests fail because the folder already exists.
+
+        also deletes all videos to save space on the filesystem.
+    '''
+
+    token = request.args.get('token', None)
+    if (token != 'this is not secure'):
+        return ''
+
+    jumpcutter_temp = 'TEMP'
+    if os.path.exists(jumpcutter_temp):
+        rmtree(jumpcutter_temp)
+
+    upload_dir = app.config['UPLOAD_FOLDER']
+    if os.path.exists(upload_dir):
+        rmtree(upload_dir)
+        os.mkdir(upload_dir)
+
+    return 'cleanup done'
 
 @app.route('/youtube', methods=['GET'])
 def use_youtube_video():
@@ -161,7 +185,7 @@ def download_video():
         try:
             return send_from_directory(app.config['UPLOAD_FOLDER'], CONVERTED_VIDEOS[download_id])
         except:
-            return 'error: invalid video_id param received :('
+            return 'error: invalid download_id param received :('
     else:
         return 'error: no download_id param received :('
 
@@ -169,4 +193,4 @@ def download_video():
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):
         os.mkdir(UPLOAD_FOLDER)
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=8080)
