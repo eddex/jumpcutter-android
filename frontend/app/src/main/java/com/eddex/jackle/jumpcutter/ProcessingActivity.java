@@ -26,6 +26,11 @@ import java.io.OutputStream;
 public class ProcessingActivity extends AppCompatActivity {
 
     ServerWrapper server;
+    private ProgressBar uploadProgressBar;
+    private ProgressBar processingProgressBar;
+    private ProgressBar downloadProgressBar;
+    private Button showMyVideosButton;
+    private Context context;
 
     public ProcessingActivity() {
 
@@ -38,6 +43,12 @@ public class ProcessingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.processing);
+
+        this.uploadProgressBar = this.findViewById(R.id.progressBar_upload);
+        this.processingProgressBar = this.findViewById(R.id.progressBar_processing);
+        this.downloadProgressBar = this.findViewById(R.id.progressBar_download);
+        this.showMyVideosButton = this.findViewById(R.id.buttonShowMyVideos);
+        this.context = getApplicationContext();
 
         Intent intent = getIntent();
         String type = intent.getType();
@@ -62,63 +73,15 @@ public class ProcessingActivity extends AppCompatActivity {
         Uri localUri = Uri.parse(path);
         File videoCopy = getCopyFileFromUri(localUri);
 
-        ProgressBar uploadProgressBar = this.findViewById(R.id.progressBar_upload);
-        ProgressBar processingProgressBar = this.findViewById(R.id.progressBar_processing);
-        ProgressBar downloadProgressBar = this.findViewById(R.id.progressBar_download);
-        Button showMyVideosButton = this.findViewById(R.id.buttonShowMyVideos);
-        Context context = getApplicationContext();
-
         AsyncTask.execute(() -> {
-            uploadProgressBar.setProgress(33);
+            this.uploadProgressBar.setProgress(33);
             String processId = this.server.uploadVideo(videoCopy);
             uploadProgressBar.setProgress(66);
             this.waitOneSecond();
             runOnUiThread(() -> Toast.makeText(context, "video uploaded", Toast.LENGTH_SHORT).show());
             uploadProgressBar.setProgress(100);
-
-            if (this.server.HasError) {
-                Log.e("ProcessingActivity", "Server error during upload.");
-                runOnUiThread(() -> Toast.makeText(context, "Error during upload. Please try again.", Toast.LENGTH_SHORT).show());
-                return;
-            }
-
-            processingProgressBar.setProgress(33);
-            String downloadId = this.server.processVideo(processId, new SettingsProvider(context));
-            processingProgressBar.setProgress(66);
-            this.waitOneSecond();
-            runOnUiThread(() -> Toast.makeText(context, "video processed", Toast.LENGTH_SHORT).show());
-            processingProgressBar.setProgress(100);
-
-            if (this.server.HasError) {
-                Log.e("ProcessingActivity", "Server error during processing.");
-                runOnUiThread(() -> Toast.makeText(context, "Error during processing. Please try again.", Toast.LENGTH_SHORT).show());
-                return;
-            }
-
-            downloadProgressBar.setProgress(33);
-            boolean downloadSucceeded = this.server.downloadVideo(downloadId);
-            if (!downloadSucceeded) {
-                runOnUiThread(() -> Toast.makeText(context, "Error during download. Please try again.", Toast.LENGTH_SHORT).show());
-                return;
-            }
-            downloadProgressBar.setProgress(66);
-            this.waitOneSecond();
-            runOnUiThread(() -> Toast.makeText(context, "video downloaded", Toast.LENGTH_SHORT).show());
-            downloadProgressBar.setProgress(100);
-
-            runOnUiThread(() -> showMyVideosButton.setEnabled(true));
+            this.processAndDownloadVideo(processId);
         });
-    }
-
-    /**
-     * Used to make sure the server is ready for the next request.
-     */
-    private void waitOneSecond() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private void processYouTubeVideo(Intent intent) {
@@ -127,9 +90,70 @@ public class ProcessingActivity extends AppCompatActivity {
         String youTubeLink = extras.getString("youTubeLink");
 
         if (youTubeLink.contains("https://youtu.be/")) {
-            AsyncTask.execute(() -> this.server.downloadYouTubeVideo(youTubeLink));
+            AsyncTask.execute(() -> {
+                this.uploadProgressBar.setProgress(33);
+                String processId = this.server.downloadYouTubeVideo(youTubeLink);
+                if (processId == null) {
+                    runOnUiThread(() -> Toast.makeText(context, "Error while downloading YouTube video. Please try again.", Toast.LENGTH_LONG).show());
+                }
+                uploadProgressBar.setProgress(66);
+                this.waitOneSecond();
+                runOnUiThread(() -> Toast.makeText(context, "YouTube video downloaded on server", Toast.LENGTH_SHORT).show());
+                uploadProgressBar.setProgress(100);
+                this.processAndDownloadVideo(processId);
+            });
         } else {
             throw new IllegalArgumentException("not a youtube link");
+        }
+    }
+
+    private void processAndDownloadVideo(String processId) {
+
+        if (this.server.HasError) {
+            Log.e("ProcessingActivity", "Server error during upload.");
+            runOnUiThread(() -> Toast.makeText(context, "Error during upload. Please try again.", Toast.LENGTH_SHORT).show());
+            return;
+        }
+
+        this.waitOneSecond();
+        processingProgressBar.setProgress(33);
+        String downloadId = this.server.processVideo(processId, new SettingsProvider(context));
+        processingProgressBar.setProgress(66);
+        this.waitOneSecond();
+        runOnUiThread(() -> Toast.makeText(context, "video processed", Toast.LENGTH_SHORT).show());
+        processingProgressBar.setProgress(100);
+
+        if (this.server.HasError) {
+            Log.e("ProcessingActivity", "Server error during processing.");
+            runOnUiThread(() -> Toast.makeText(context, "Error during processing. Please try again.", Toast.LENGTH_SHORT).show());
+            return;
+        }
+
+        this.waitOneSecond();
+        downloadProgressBar.setProgress(33);
+        boolean downloadSucceeded = this.server.downloadVideo(downloadId);
+        if (!downloadSucceeded) {
+            runOnUiThread(() -> Toast.makeText(context, "Error during download. Please try again.", Toast.LENGTH_SHORT).show());
+            return;
+        }
+        downloadProgressBar.setProgress(66);
+        this.waitOneSecond();
+        runOnUiThread(() -> Toast.makeText(context, "video downloaded", Toast.LENGTH_SHORT).show());
+        downloadProgressBar.setProgress(100);
+
+        runOnUiThread(() -> showMyVideosButton.setEnabled(true));
+    }
+
+    /**
+     * Used to make sure the server is ready for the next request.
+     * Sometimes it takes a while until the files are written to the file system.
+     * Also useful to fake progress of progress bars :^)
+     */
+    private void waitOneSecond() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
