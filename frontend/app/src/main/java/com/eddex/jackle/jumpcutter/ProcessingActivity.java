@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.eddex.jackle.jumpcutter.injection.DaggerServerComponent;
 import com.eddex.jackle.jumpcutter.injection.ServerComponent;
 import com.eddex.jackle.jumpcutter.internet.ServerWrapper;
-import com.eddex.jackle.jumpcutter.internet.SettingsProvider;
+import com.eddex.jackle.jumpcutter.helpers.SettingsProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;

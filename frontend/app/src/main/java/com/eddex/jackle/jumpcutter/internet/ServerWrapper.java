@@ -1,10 +1,11 @@
 package com.eddex.jackle.jumpcutter.internet;
 
-import android.os.Environment;
 import android.util.Log;
 
+import com.eddex.jackle.jumpcutter.helpers.FileSystemWrapper;
+import com.eddex.jackle.jumpcutter.helpers.SettingsProvider;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -22,13 +23,15 @@ public class ServerWrapper {
     public boolean HasError = false;
 
     private final OkHttpClient okHttpClient;
+    private final FileSystemWrapper filesystemWrapper;
     private final String Scheme = "https";
     private final String Host = "jumpcutter.letum.ch"; // on emulator localhost = 10.0.2.2, "192.168.1.160"
     //private final int Port = 8080;
 
     @Inject
-    public ServerWrapper(OkHttpClient okHttpClient) {
+    public ServerWrapper(OkHttpClient okHttpClient, FileSystemWrapper filesystemWrapper) {
         this.okHttpClient = okHttpClient;
+        this.filesystemWrapper = filesystemWrapper;
     }
 
     /**
@@ -180,17 +183,13 @@ public class ServerWrapper {
             // get video
             Response response = this.okHttpClient.newCall(request).execute();
             byte[] video = response.body().bytes();
+            this.filesystemWrapper.saveDownloadedVideo(video);
 
-            // create file
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "jumpcutter");
-            File videoFile = new File(dir, String.format("jumpcutter_video_%s", downloadId));
-
-            // write content to file
-            FileOutputStream fileStream = new FileOutputStream(videoFile);
-            fileStream.write(video);
-            fileStream.flush();
-            fileStream.close();
         } catch (IOException e) {
+            e.printStackTrace();
+            successful = false;
+        }
+        catch (IllegalStateException e) {
             e.printStackTrace();
             successful = false;
         }

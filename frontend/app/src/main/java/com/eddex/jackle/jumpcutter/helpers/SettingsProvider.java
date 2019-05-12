@@ -1,4 +1,4 @@
-package com.eddex.jackle.jumpcutter.internet;
+package com.eddex.jackle.jumpcutter.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
