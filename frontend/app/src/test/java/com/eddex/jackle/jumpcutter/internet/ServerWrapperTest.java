@@ -270,4 +270,43 @@ public class ServerWrapperTest {
 
         Assert.assertEquals(true, response);
     }
+
+    @Test
+    public void downloadYouTubeVideo_NoErrors_ReturnsVideoId() {
+
+        final String ExpectedVideoId = "video_id_1";
+        final String YouTubeUrl = "youtube.com123";
+
+        MockInterceptor okHttpMockInterceptor = new MockInterceptor();
+        okHttpMockInterceptor.addRule()
+                .get()
+                .urlStarts("https://jumpcutter.letum.ch/youtube?url=" + YouTubeUrl)
+                .respond(ExpectedVideoId);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(okHttpMockInterceptor)
+                .build();
+
+        ServerWrapper server = new ServerWrapper(okHttpClient, null);
+        String videoId = server.downloadYouTubeVideo(YouTubeUrl);
+
+        Assert.assertEquals(ExpectedVideoId, videoId);
+    }
+
+    @Test
+    public void downloadYouTubeVideo_VideoUploadFailed_ReturnsNull() {
+
+        MockInterceptor okHttpMockInterceptor = new MockInterceptor();
+        okHttpMockInterceptor.addRule()
+                .get()
+                .urlStarts("https://jumpcutter.letum.ch/youtube")
+                .answer(request -> new Response.Builder().code(404));
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(okHttpMockInterceptor)
+                .build();
+
+        ServerWrapper server = new ServerWrapper(okHttpClient, null);
+        String videoId = server.downloadYouTubeVideo(null);
+
+        Assert.assertEquals(null, videoId);
+    }
 }
