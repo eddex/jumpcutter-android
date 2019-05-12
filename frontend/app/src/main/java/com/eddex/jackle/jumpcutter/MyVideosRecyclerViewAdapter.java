@@ -79,7 +79,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
                 File toDelete = mData.get(index);
                 if (toDelete.delete()) {
                     mData.remove(toDelete);
-                    notifyDataSetChanged();
+                    notifyItemRangeChanged(index, mData.size()-index+1);
                 }
             });
         }
