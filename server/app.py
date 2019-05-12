@@ -67,7 +67,7 @@ def use_youtube_video():
     except Exception as e:
         print (e)
         return 'error: can\'t parse youtube url :('
-    UPLOADED_VIDEOS[video_id] = filename
+    UPLOADED_VIDEOS[video_id] = '{}.mp4'.format(filename)
     return video_id
 
 
