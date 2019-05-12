@@ -49,7 +49,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        File video = mData.get(position);
+        File video = this.mData.get(position);
         holder.myTextView.setText(video.getName());
 
         Bitmap bmThumbnail = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
@@ -62,7 +62,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public int getItemCount() {
-        return (mData == null) ?  0 : mData.size();
+        return (this.mData == null) ?  0 : this.mData.size();
     }
 
     // stores and recycles views as they are scrolled off screen
@@ -112,14 +112,14 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
     private void DeleteVideo(File toDelete, int index)
     {
         if (toDelete.delete()) {
-            mData.remove(toDelete);
-            notifyItemRangeChanged(index, mData.size()-index+1);
+            this.mData.remove(toDelete);
+            notifyItemRangeChanged(index, this.mData.size()-index+1);
         }
     }
 
     // convenience method for getting data at click position
     File getItem(int id) {
-        return mData.get(id);
+        return this.mData.get(id);
     }
 
     /**
@@ -131,8 +131,8 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
     }
 
     /**
-      * parent activity will implement this method to respond to click events
-      */
+     * parent activity will implement this method to respond to click events
+     */
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
