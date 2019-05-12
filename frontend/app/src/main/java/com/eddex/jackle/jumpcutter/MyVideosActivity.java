@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -32,8 +33,8 @@ public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myvideos);
 
-        getExternalStorageWritePermission();
-        FillViewWithVideos();
+        this.getExternalStorageWritePermission();
+        AsyncTask.execute(this::fillViewWithVideos);
     }
 
     @Override
@@ -45,8 +46,8 @@ public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyc
         startActivity(intent);
     }
 
-    private void FillViewWithVideos() {
-        RecyclerView recyclerView = findViewById(R.id.rvAnimals);
+    private void fillViewWithVideos() {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "jumpcutter");
         dir.mkdir();
@@ -58,7 +59,6 @@ public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyc
     /**
      * Inflates (creates) menu
      * @param menu activity menu which will be inflated
-     * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,18 +70,15 @@ public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyc
     /**
      * Occurs when menu item is clicked
      * @param item clicked menu item
-     * @return
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.about:
-                this.startActivity(new Intent(this, AboutActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.about) {
+            this.startActivity(new Intent(this, AboutActivity.class));
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public void getExternalStorageWritePermission() {
@@ -89,7 +86,10 @@ public class MyVideosActivity extends AppCompatActivity implements MyVideosRecyc
         int writeExternalStoragePermission = ContextCompat.checkSelfPermission(MyVideosActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (writeExternalStoragePermission!= PackageManager.PERMISSION_GRANTED) {
             // Request user to grant write external storage permission.
-            ActivityCompat.requestPermissions(MyVideosActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION);
+            ActivityCompat.requestPermissions(
+                    MyVideosActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION);
         }
     }
 

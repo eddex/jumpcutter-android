@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRecyclerViewAdapter.ViewHolder> {
     private ArrayList<File> mData;
@@ -24,7 +26,15 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
     // data is passed into the constructor
     public MyVideosRecyclerViewAdapter(Context context, ArrayList<File> data) {
         this.mInflater = LayoutInflater.from(context);
+        Collections.sort(data, new FileComparator());
         this.mData = data;
+    }
+
+    private class FileComparator implements Comparator<File> {
+        @Override
+        public int compare(File s, File t) {
+            return s.getName().compareTo(t.getName());
+        }
     }
 
     /**
