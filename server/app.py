@@ -193,4 +193,4 @@ def download_video():
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):
         os.mkdir(UPLOAD_FOLDER)
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=80)
