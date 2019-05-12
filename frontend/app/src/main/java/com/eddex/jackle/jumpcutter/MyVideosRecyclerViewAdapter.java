@@ -5,22 +5,23 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRecyclerViewAdapter.ViewHolder> {
-    private File[] mData;
+    private ArrayList<File> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    public MyVideosRecyclerViewAdapter(Context context, File[] data) {
+    public MyVideosRecyclerViewAdapter(Context context, ArrayList<File> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -45,7 +46,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        File video = mData[position];
+        File video = mData.get(position);
         holder.myTextView.setText(video.getName());
 
         Bitmap bmThumbnail = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
@@ -58,19 +59,29 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
      */
     @Override
     public int getItemCount() {
-        return (mData == null) ?  0 : mData.length;
+        return (mData == null) ?  0 : mData.size();
     }
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView myTextView;
         ImageView thumbnail;
+        ImageButton deleteButton;
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.videoFilename);
             thumbnail = itemView.findViewById(R.id.thumbnail);
             itemView.setOnClickListener(this);
+            deleteButton = itemView.findViewById(R.id.delete_local_video_button);
+            deleteButton.setOnClickListener(v -> {
+                int index = getAdapterPosition();
+                File toDelete = mData.get(index);
+                if (toDelete.delete()) {
+                    mData.remove(toDelete);
+                    notifyItemRangeChanged(index, mData.size()-index+1);
+                }
+            });
         }
 
         @Override
@@ -81,7 +92,7 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
 
     // convenience method for getting data at click position
     File getItem(int id) {
-        return mData[id];
+        return mData.get(id);
     }
 
     /**
