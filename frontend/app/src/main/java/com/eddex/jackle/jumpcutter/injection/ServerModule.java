@@ -13,12 +13,11 @@ class ServerModule {
     OkHttpClient provideOkHttpClient() {
 
         // set all timeouts to 5min since the processing of the video can take a long time.
-        OkHttpClient client = new OkHttpClient.Builder()
+        return new OkHttpClient.Builder()
                 .callTimeout(5, TimeUnit.MINUTES)
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .readTimeout(5, TimeUnit.MINUTES)
                 .writeTimeout(5, TimeUnit.MINUTES)
                 .build();
-        return client;
     }
 }
