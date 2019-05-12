@@ -1,9 +1,7 @@
 package com.eddex.jackle.jumpcutter;
 
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
