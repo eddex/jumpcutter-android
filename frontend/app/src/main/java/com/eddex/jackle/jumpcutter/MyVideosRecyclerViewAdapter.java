@@ -1,6 +1,9 @@
 package com.eddex.jackle.jumpcutter;
 
+import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
@@ -70,23 +73,47 @@ public class MyVideosRecyclerViewAdapter extends RecyclerView.Adapter<MyVideosRe
 
         ViewHolder(View itemView) {
             super(itemView);
+
+
             myTextView = itemView.findViewById(R.id.videoFilename);
             thumbnail = itemView.findViewById(R.id.thumbnail);
             itemView.setOnClickListener(this);
             deleteButton = itemView.findViewById(R.id.delete_local_video_button);
+
             deleteButton.setOnClickListener(v -> {
                 int index = getAdapterPosition();
                 File toDelete = mData.get(index);
-                if (toDelete.delete()) {
-                    mData.remove(toDelete);
-                    notifyItemRangeChanged(index, mData.size()-index+1);
-                }
+                ShowDeleteDialog(toDelete, index);
             });
         }
 
         @Override
         public void onClick(View view) {
             if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+        }
+    }
+
+    private void ShowDeleteDialog(File video, int index)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mInflater.getContext());
+
+        builder.setTitle("Confirm")
+                .setMessage("Are you sure?")
+                .setPositiveButton("YES", (dialog, which) -> {
+                    DeleteVideo(video, index);
+                    dialog.dismiss();
+                })
+                .setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void DeleteVideo(File toDelete, int index)
+    {
+        if (toDelete.delete()) {
+            mData.remove(toDelete);
+            notifyItemRangeChanged(index, mData.size()-index+1);
         }
     }
 
