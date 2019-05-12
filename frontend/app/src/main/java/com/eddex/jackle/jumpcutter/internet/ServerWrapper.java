@@ -159,7 +159,9 @@ public class ServerWrapper {
      * Download a processed video.
      * @param downloadId: The download id returned by the processVideo() method.
      */
-    public void downloadVideo(String downloadId) {
+    public boolean downloadVideo(String downloadId) {
+
+        boolean successful = true;
 
         HttpUrl url = new HttpUrl.Builder()
                 .scheme(this.Scheme)
@@ -190,7 +192,9 @@ public class ServerWrapper {
             fileStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+            successful = false;
         }
+        return successful;
     }
 
     private String getStringResponseFromServer(Request request) {

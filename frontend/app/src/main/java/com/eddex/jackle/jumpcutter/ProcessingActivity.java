@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 
 public class ProcessingActivity extends AppCompatActivity {
 
@@ -73,33 +72,53 @@ public class ProcessingActivity extends AppCompatActivity {
             uploadProgressBar.setProgress(33);
             String processId = this.server.uploadVideo(videoCopy);
             uploadProgressBar.setProgress(66);
+            this.waitOneSecond();
             runOnUiThread(() -> Toast.makeText(context, "video uploaded", Toast.LENGTH_SHORT).show());
             uploadProgressBar.setProgress(100);
 
             if (this.server.HasError) {
                 Log.e("ProcessingActivity", "Server error during upload.");
+                runOnUiThread(() -> Toast.makeText(context, "Error during upload. Please try again.", Toast.LENGTH_SHORT).show());
                 return;
             }
 
             processingProgressBar.setProgress(33);
             String downloadId = this.server.processVideo(processId, new SettingsProvider(context));
             processingProgressBar.setProgress(66);
+            this.waitOneSecond();
             runOnUiThread(() -> Toast.makeText(context, "video processed", Toast.LENGTH_SHORT).show());
             processingProgressBar.setProgress(100);
 
             if (this.server.HasError) {
                 Log.e("ProcessingActivity", "Server error during processing.");
+                runOnUiThread(() -> Toast.makeText(context, "Error during processing. Please try again.", Toast.LENGTH_SHORT).show());
                 return;
             }
 
             downloadProgressBar.setProgress(33);
-            this.server.downloadVideo(downloadId);
+            boolean downloadSucceeded = this.server.downloadVideo(downloadId);
+            if (!downloadSucceeded) {
+                runOnUiThread(() -> Toast.makeText(context, "Error during download. Please try again.", Toast.LENGTH_SHORT).show());
+                return;
+            }
             downloadProgressBar.setProgress(66);
+            this.waitOneSecond();
             runOnUiThread(() -> Toast.makeText(context, "video downloaded", Toast.LENGTH_SHORT).show());
             downloadProgressBar.setProgress(100);
 
             runOnUiThread(() -> showMyVideosButton.setEnabled(true));
         });
+    }
+
+    /**
+     * Used to make sure the server is ready for the next request.
+     */
+    private void waitOneSecond() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void processYouTubeVideo(Intent intent) {
@@ -114,6 +133,11 @@ public class ProcessingActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Copy a file from the local file system
+     * @param localUri: The URI to the file on the filesystem.
+     * @return: The copied file or null if an error occurred.
+     */
     private File getCopyFileFromUri(Uri localUri)
     {
         File copy = new File( getFilesDir(),"copy.mp4");
@@ -137,6 +161,10 @@ public class ProcessingActivity extends AppCompatActivity {
             return copy;
         }
         catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        catch (NullPointerException e) {
             e.printStackTrace();
             return null;
         }
