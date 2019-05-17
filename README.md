@@ -1,4 +1,9 @@
 # Jumpcutter Android
+
+<h1 align=center>
+<img src="logo/horizontal.png" width=50%>
+</h1>
+
 An Android app and a server for automatic video edits!
 
 ## Android app
